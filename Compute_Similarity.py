@@ -3,8 +3,6 @@ import time, sys
 import scipy.sparse as sps
 
 
-
-
 def check_matrix(X, format='csc', dtype=np.float32):
     if format == 'csc' and not isinstance(X, sps.csc_matrix):
         return X.tocsc().astype(dtype)
@@ -405,3 +403,8 @@ class Compute_Similarity_Python:
 
 
             return W_sparse
+
+
+
+
+                 
