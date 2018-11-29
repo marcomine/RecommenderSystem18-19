@@ -19,10 +19,10 @@ class dataReader:
 
 
         # Any results you write to the current directory are saved as output.
-        tracks = pd.read_csv("/Users/samuelelanghi/Desktop/Recommender_Sem/data_raw/tracks.csv")
-        train = pd.read_csv("/Users/samuelelanghi/Desktop/Recommender_Sem/data_raw/train.csv")
-        targetPlaylist = pd.read_csv("/Users/samuelelanghi/Desktop/Recommender_Sem/data_raw/target_playlists.csv")
-        train_seq = pd.read_csv("/Users/samuelelanghi/Desktop/Recommender_Sem/data_raw/train_sequential.csv")
+        tracks = pd.read_csv("/Users/samuelelanghi/Documents/GitHub/RecommenderSystem18-19/Recommender_Sem/data_raw/tracks.csv")
+        train = pd.read_csv("/Users/samuelelanghi/Documents/GitHub/RecommenderSystem18-19/Recommender_Sem/data_raw/train.csv")
+        targetPlaylist = pd.read_csv("/Users/samuelelanghi/Documents/GitHub/RecommenderSystem18-19/Recommender_Sem/data_raw/target_playlists.csv")
+        train_seq = pd.read_csv("/Users/samuelelanghi/Documents/GitHub/RecommenderSystem18-19/Recommender_Sem/data_raw/train_sequential.csv")
 
         targetPlaylistCol = targetPlaylist.playlist_id.tolist()
 
@@ -32,7 +32,6 @@ class dataReader:
         playlistColTuples = list(filter(lambda x: x not in playlistColTuples_seq, playlistColTuples_tot))
 
         playlistCol_target_notseq = list(filter(lambda x: x[0] in targetPlaylistCol, playlistColTuples))
-
 
 
 
@@ -65,6 +64,14 @@ class dataReader:
         mat_notseq = sps.coo_matrix((numPlaylist_notseq, (playlistCol, tracklistCol)),
                                     shape=(number_of_play + 1, len(trackCol)))
         mat_notseq = mat_notseq.tocsr()
+
+        PlaylistColumn = train.playlist_id.tolist()
+        trackColumn = train.track_id.tolist()
+        numPlaylist = len(PlaylistColumn)
+        numPlaylist = np.ones(numPlaylist, dtype=int)
+        self.mat_complete = sps.coo_matrix((numPlaylist, (PlaylistColumn, trackColumn)),
+                                           shape=(number_of_play + 1, len(trackCol)))
+        self.mat_complete = self.mat_complete.tocsr()
 
         numPlaylist_notseq_target = np.ones(len(playlistCol_target_notseq), dtype=int)
         mat_notseq_target = sps.coo_matrix((numPlaylist_notseq_target, (playlistCol_target, tracklistCol_target)),
@@ -111,12 +118,16 @@ class dataReader:
 
         URM_train_seq, URM_train, URM_valid_seq, URM_valid = self.train_valid_holdout(URM_train, URM_train_seq, mat_seq_rank, nonempty_seq, train_perc=0.75, old_perc=0.8)
 
-
+        self.ICM_Art = matTrack_Artist
+        self.ICM_Alb = matTrack_Album
 
         # NUOVA AGGIUNTA
         self.mat_Train = URM_train + URM_train_seq + mat
         self.mat_Test = URM_test+URM_test_seq
         self.mat_Valid = URM_valid + URM_valid_seq
+
+    def get_URM_complete(self):
+        return self.mat_complete
 
     def get_URM_train(self):
         return self.mat_Train
@@ -126,6 +137,12 @@ class dataReader:
 
     def get_URM_test(self):
         return self.mat_Test
+
+    def get_ICM_Art(self):
+        return self.ICM_Art
+
+    def get_ICM_Alb(self):
+        return self.ICM_Alb
 
     def train_test_holdout(self, URM_all, URM_all_seq, URM_all_seq_rank, nonempty_seq, train_perc=0.8):
         numInteractions = URM_all.nnz

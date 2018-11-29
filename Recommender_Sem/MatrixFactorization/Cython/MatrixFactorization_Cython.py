@@ -23,7 +23,7 @@ class MatrixFactorization_Cython(Recommender, Incremental_Training_Early_Stoppin
     RECOMMENDER_NAME = "MatrixFactorization_Cython_Recommender"
 
 
-    def __init__(self, URM_train, positive_threshold=4, URM_validation = None, recompile_cython = False, algorithm = "MF_BPR"):
+    def __init__(self, URM_train, positive_threshold=1, URM_validation = None, recompile_cython = False, algorithm = "MF_BPR"):
 
 
         super(MatrixFactorization_Cython, self).__init__()
@@ -62,7 +62,7 @@ class MatrixFactorization_Cython(Recommender, Incremental_Training_Early_Stoppin
 
 
 
-    def fit(self, epochs=300, batch_size = 1000, num_factors=10,
+    def fit(self, epochs=200, batch_size = 1000, num_factors=10,
             learning_rate = 0.01, sgd_mode='sgd', user_reg = 0.0, positive_reg = 0.0, negative_reg = 0.0,
             stop_on_validation = False, lower_validatons_allowed = 5, validation_metric = "MAP",
             evaluator_object = None, validation_every_n = 5):
@@ -75,7 +75,7 @@ class MatrixFactorization_Cython(Recommender, Incremental_Training_Early_Stoppin
         self.learning_rate = learning_rate
 
         if evaluator_object is None and stop_on_validation:
-            evaluator_object = SequentialEvaluator(self.URM_validation, [5])
+            evaluator_object = SequentialEvaluator(self.URM_validation, [10])
 
 
         # Import compiled module

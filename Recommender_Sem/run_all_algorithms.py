@@ -14,7 +14,10 @@ from GraphBased.RP3betaRecommender import RP3betaRecommender
 from GraphBased.P3alphaRecommender import P3alphaRecommender
 
 #from data.Movielens_10M.Movielens10MReader import Movielens10MReader
-from DataReader import dataReader
+#from DataReader import dataReader
+from DataReaderWithoutValid import dataReader
+
+from HybridRecommender import HybridRecommender
 
 import traceback, os
 
@@ -28,25 +31,18 @@ if __name__ == '__main__':
     URM_validation = dataReader.get_URM_validation()
     URM_test = dataReader.get_URM_test()
 
+    ICM_Art = dataReader.get_ICM_Art()
+    ICM_Alb = dataReader.get_ICM_Alb()
+
     recommender_list = [
-        Random,
-        TopPop,
-        P3alphaRecommender,
-        RP3betaRecommender,
-        ItemKNNCFRecommender,
-        UserKNNCFRecommender,
-        MatrixFactorization_BPR_Cython,
-        MatrixFactorization_FunkSVD_Cython,
-        PureSVDRecommender,
-        SLIM_BPR_Cython,
-        SLIMElasticNetRecommender
+        HybridRecommender
         ]
 
 
     from Base.Evaluation.Evaluator import SequentialEvaluator
 
     evaluator = SequentialEvaluator(URM_test, [10], exclude_seen=True)
-
+    evaluatorValid = SequentialEvaluator(URM_validation, [10], exclude_seen=True)
 
     output_root_path = "result_experiments/"
 
@@ -66,7 +62,7 @@ if __name__ == '__main__':
 
 
             recommender = recommender_class(URM_train)
-            recommender.fit()
+            recommender.fit(ICM_Art, ICM_Alb, w_itemcf=1.1, w_usercf=0.6, w_cbart=0.3, w_cbalb=0.6, w_slim=0.8, w_svd=0.6)
 
             results_run, results_run_string = evaluator.evaluateRecommender(recommender)
 

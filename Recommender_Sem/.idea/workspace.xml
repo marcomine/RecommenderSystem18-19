@@ -1,12 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="31dc3b1c-1d97-42e7-a977-c52a6aad5062" name="Default Changelist" comment="" />
+    <list default="true" id="31dc3b1c-1d97-42e7-a977-c52a6aad5062" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Base/Similarity/Cython/Compute_Similarity_Cython.c" beforeDir="false" afterPath="$PROJECT_DIR$/Base/Similarity/Cython/Compute_Similarity_Cython.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Base/Similarity/Cython/Compute_Similarity_Cython.cpython-36m-ppc64-linux-gnu.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Base/Similarity/Cython/Compute_Similarity_Cython.cpython-36m-x86_64-linux-gnu.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Base/Similarity/Cython/Compute_Similarity_Cython.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataReader.py" beforeDir="false" afterPath="$PROJECT_DIR$/DataReader.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MatrixFactorization/Cython/MF_RMSE.c" beforeDir="false" afterPath="$PROJECT_DIR$/MatrixFactorization/Cython/MF_RMSE.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MatrixFactorization/Cython/MF_RMSE.cpython-36m-x86_64-linux-gnu.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/MatrixFactorization/Cython/MF_RMSE.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/MatrixFactorization/Cython/MatrixFactorization_Cython.py" beforeDir="false" afterPath="$PROJECT_DIR$/MatrixFactorization/Cython/MatrixFactorization_Cython.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MatrixFactorization/Cython/MatrixFactorization_Cython_Epoch.c" beforeDir="false" afterPath="$PROJECT_DIR$/MatrixFactorization/Cython/MatrixFactorization_Cython_Epoch.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MatrixFactorization/Cython/MatrixFactorization_Cython_Epoch.cpython-36m-ppc64-linux-gnu.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/MatrixFactorization/Cython/MatrixFactorization_Cython_Epoch.cpython-36m-x86_64-linux-gnu.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/MatrixFactorization/Cython/MatrixFactorization_Cython_Epoch.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/MatrixFactorization/Cython/MatrixFactorization_Cython_Epoch.pyx" beforeDir="false" afterPath="$PROJECT_DIR$/MatrixFactorization/Cython/MatrixFactorization_Cython_Epoch.pyx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MatrixFactorization/PureSVD.py" beforeDir="false" afterPath="$PROJECT_DIR$/MatrixFactorization/PureSVD.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SLIM_BPR/Cython/SLIM_BPR_Cython.py" beforeDir="false" afterPath="$PROJECT_DIR$/SLIM_BPR/Cython/SLIM_BPR_Cython.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SLIM_BPR/Cython/SLIM_BPR_Cython_Epoch.c" beforeDir="false" afterPath="$PROJECT_DIR$/SLIM_BPR/Cython/SLIM_BPR_Cython_Epoch.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SLIM_BPR/Cython/SLIM_BPR_Cython_Epoch.cpython-36m-ppc64-linux-gnu.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SLIM_BPR/Cython/SLIM_BPR_Cython_Epoch.cpython-36m-x86_64-linux-gnu.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SLIM_BPR/Cython/SLIM_BPR_Cython_Epoch.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SLIM_BPR/Cython/compileCython.py" beforeDir="false" afterPath="$PROJECT_DIR$/SLIM_BPR/Cython/compileCython.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SLIM_ElasticNet/SLIMElasticNetRecommender.py" beforeDir="false" afterPath="$PROJECT_DIR$/SLIM_ElasticNet/SLIMElasticNetRecommender.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/result_experiments/SLIMElasticNetRecommender_BayesianSearch.txt" beforeDir="false" afterPath="$PROJECT_DIR$/result_experiments/SLIMElasticNetRecommender_BayesianSearch.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/result_experiments/SLIMElasticNetRecommender_best_model" beforeDir="false" afterPath="$PROJECT_DIR$/result_experiments/SLIMElasticNetRecommender_best_model" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/result_experiments/SLIMElasticNetRecommender_best_parameters" beforeDir="false" afterPath="$PROJECT_DIR$/result_experiments/SLIMElasticNetRecommender_best_parameters" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/result_experiments/SLIMElasticNetRecommender_best_result_test" beforeDir="false" afterPath="$PROJECT_DIR$/result_experiments/SLIMElasticNetRecommender_best_result_test" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/result_experiments/SLIMElasticNetRecommender_best_result_validation" beforeDir="false" afterPath="$PROJECT_DIR$/result_experiments/SLIMElasticNetRecommender_best_result_validation" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/result_experiments/result_all_algorithms.txt" beforeDir="false" afterPath="$PROJECT_DIR$/result_experiments/result_all_algorithms.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_all_algorithms.py" beforeDir="false" afterPath="$PROJECT_DIR$/run_all_algorithms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_parameter_search.py" beforeDir="false" afterPath="$PROJECT_DIR$/run_parameter_search.py" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CoverageDataManager">
+    <SUITE FILE_PATH="coverage/Recommender_Sem$run_all_algorithms.coverage" NAME="run_all_algorithms Coverage Results" MODIFIED="1543431316416" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="FUSProjectUsageTrigger">
     <session id="1766630673">
@@ -74,21 +110,49 @@
         </counts>
       </usages-collector>
     </session>
+    <session id="-1084595721">
+      <usages-collector id="statistics.lifecycle.project">
+        <counts>
+          <entry key="project.closed" value="3" />
+          <entry key="project.open.time.1" value="1" />
+          <entry key="project.open.time.6" value="1" />
+          <entry key="project.open.time.7" value="1" />
+          <entry key="project.opened" value="3" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.edit">
+        <counts>
+          <entry key="py" value="2954" />
+          <entry key="pyx" value="2" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.edit">
+        <counts>
+          <entry key="Cython" value="2" />
+          <entry key="Python" value="2954" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.open">
+        <counts>
+          <entry key="py" value="38" />
+          <entry key="pyx" value="10" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.open">
+        <counts>
+          <entry key="Cython" value="10" />
+          <entry key="Python" value="38" />
+        </counts>
+      </usages-collector>
+    </session>
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/KNN/ItemKNNCBFRecommender.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-38" />
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/run_all_algorithms.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="597">
-              <caret line="47" column="33" lean-forward="true" selection-start-line="47" selection-start-column="33" selection-end-line="47" selection-end-column="33" />
+            <state relative-caret-position="428">
+              <caret line="64" column="121" selection-start-line="64" selection-start-column="121" selection-end-line="64" selection-end-column="121" />
               <folding>
                 <element signature="e#1#60#0" expanded="true" />
               </folding>
@@ -97,10 +161,31 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/DataReaderWithoutValid.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="343">
+              <caret line="132" selection-start-line="132" selection-end-line="132" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Base/Recommender.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-295">
+              <caret line="11" column="6" selection-start-line="11" selection-start-column="6" selection-end-line="11" selection-end-column="6" />
+              <folding>
+                <element signature="e#91#109#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/run_parameter_search.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="325">
-              <caret line="433" lean-forward="true" selection-start-line="433" selection-end-line="433" />
+            <state relative-caret-position="156">
+              <caret line="313" column="43" selection-start-line="313" selection-start-column="43" selection-end-line="313" selection-end-column="43" />
               <folding>
                 <element signature="e#110#143#0" expanded="true" />
               </folding>
@@ -108,11 +193,64 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ParameterTuning/BayesianSearch.py">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/HybridRecommender.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2057">
-              <caret line="54" column="8" selection-start-line="54" selection-start-column="8" selection-end-line="54" selection-end-column="8" />
+            <state relative-caret-position="1095">
+              <caret line="73" column="283" selection-start-line="73" selection-start-column="283" selection-end-line="73" selection-end-column="283" />
+              <folding>
+                <element signature="e#0#47#0" expanded="true" />
+                <marker date="1543494549089" expanded="true" signature="1045:1046" ph="..." />
+                <marker date="1543494549089" expanded="true" signature="1045:1052" ph="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/MatrixFactorization/PureSVD.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="185">
+              <caret line="36" column="43" selection-start-line="36" selection-start-column="43" selection-end-line="36" selection-end-column="43" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$USER_HOME$/anaconda3/lib/python3.7/site-packages/sklearn/utils/extmath.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="3405">
+              <caret line="227" column="4" selection-start-line="227" selection-start-column="4" selection-end-line="227" selection-end-column="4" />
+              <folding>
+                <element signature="e#278#309#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/prova.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="932">
+              <caret line="597" column="27" selection-start-line="597" selection-start-column="27" selection-end-line="597" selection-end-column="27" />
+              <folding>
+                <element signature="e#0#18#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/DataReader.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="361">
+              <caret line="129" column="32" lean-forward="true" selection-start-line="128" selection-start-column="4" selection-end-line="129" selection-end-column="32" />
+              <folding>
+                <marker date="1543489147099" expanded="true" signature="174:219" ph="..." />
+                <marker date="1543489147099" expanded="true" signature="5585:5624" ph="..." />
+                <marker date="1543489147099" expanded="true" signature="5772:5919" ph="..." />
+                <marker date="1543489147099" expanded="true" signature="5885:5919" ph="..." />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -120,21 +258,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/SLIM_ElasticNet/SLIMElasticNetRecommender.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="426">
-              <caret line="66" column="43" selection-start-line="66" selection-start-column="43" selection-end-line="66" selection-end-column="43" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/DataReader.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="150">
-              <caret line="17" lean-forward="true" selection-start-line="17" selection-end-line="17" />
-              <folding>
-                <marker date="1543314601398" expanded="true" signature="174:219" ph="..." />
-                <marker date="1543314601398" expanded="true" signature="5079:5114" ph="..." />
-              </folding>
+            <state relative-caret-position="407">
+              <caret line="171" lean-forward="true" selection-start-line="171" selection-end-line="171" />
             </state>
           </provider>
         </entry>
@@ -148,15 +273,26 @@
       </list>
     </option>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/data/DataReader.py" />
         <option value="$PROJECT_DIR$/../RecSys_Course_2018-master/DataReader.py" />
-        <option value="$PROJECT_DIR$/DataReader.py" />
-        <option value="$PROJECT_DIR$/run_all_algorithms.py" />
-        <option value="$PROJECT_DIR$/SLIM_ElasticNet/SLIMElasticNetRecommender.py" />
+        <option value="$PROJECT_DIR$/SLIM_BPR/Cython/SLIM_BPR_Cython_Epoch.pyx" />
+        <option value="$PROJECT_DIR$/MatrixFactorization/Cython/MatrixFactorization_Cython_Epoch.pyx" />
+        <option value="$PROJECT_DIR$/MatrixFactorization/Cython/MatrixFactorization_Cython.py" />
+        <option value="$PROJECT_DIR$/SLIM_BPR/Cython/SLIM_BPR_Cython.py" />
         <option value="$PROJECT_DIR$/run_parameter_search.py" />
+        <option value="$PROJECT_DIR$/DataReader.py" />
+        <option value="$PROJECT_DIR$/DataReaderWithoutValid.py" />
+        <option value="$PROJECT_DIR$/prova.py" />
+        <option value="$PROJECT_DIR$/SLIM_ElasticNet/SLIMElasticNetRecommender.py" />
+        <option value="$PROJECT_DIR$/MatrixFactorization/PureSVD.py" />
+        <option value="$PROJECT_DIR$/run_all_algorithms.py" />
+        <option value="$PROJECT_DIR$/HybridRecommender.py" />
       </list>
     </option>
   </component>
@@ -166,15 +302,18 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6" fullScreen="true">
-    <option name="width" value="1680" />
-    <option name="height" value="1050" />
+  <component name="ProjectFrameBounds" fullScreen="true">
+    <option name="y" value="23" />
+    <option name="width" value="1440" />
+    <option name="height" value="814" />
   </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -185,13 +324,17 @@
             <path>
               <item name="Recommender_Sem" type="b2602c69:ProjectViewProjectNode" />
               <item name="Recommender_Sem" type="462c0819:PsiDirectoryNode" />
+              <item name="MatrixFactorization" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Recommender_Sem" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Recommender_Sem" type="462c0819:PsiDirectoryNode" />
               <item name="SLIM_ElasticNet" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -200,6 +343,11 @@
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+    </key>
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -213,11 +361,14 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.run_parameter_search">
+  <component name="RunManager" selected="Python.run_all_algorithms">
     <configuration name="DataReader" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Recommender Sem" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/data" />
       <option name="IS_MODULE_SDK" value="true" />
@@ -247,6 +398,25 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="true" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="prova" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="Recommender Sem" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/prova.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="true" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -297,11 +467,13 @@
       <item itemvalue="Python.DataReader" />
       <item itemvalue="Python.run_all_algorithms" />
       <item itemvalue="Python.run_parameter_search" />
+      <item itemvalue="Python.prova" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.run_parameter_search" />
         <item itemvalue="Python.run_all_algorithms" />
+        <item itemvalue="Python.prova" />
+        <item itemvalue="Python.run_parameter_search" />
         <item itemvalue="Python.DataReader" />
       </list>
     </recent_temporary>
@@ -323,7 +495,7 @@
     <frame x="0" y="0" width="1680" height="1050" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.20879121" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.18498169" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -336,9 +508,9 @@
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="8" show_stripe_button="false" />
       <window_info anchor="bottom" id="Database Changes" order="9" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
+      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.50061053" side_tool="true" weight="0.23979592" />
       <window_info anchor="bottom" id="Terminal" order="11" />
-      <window_info active="true" anchor="bottom" id="Python Console" order="12" visible="true" weight="0.32959184" />
+      <window_info active="true" anchor="bottom" id="Python Console" order="12" sideWeight="0.4993895" visible="true" weight="0.23979592" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -356,11 +528,7 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/../RecSys_Course_2018-master/data/Movielens_10M/Movielens10MReader.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1338" />
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/../RecSys_Course_2018-master/data/Movielens_10M/Movielens10MReader.py" />
     <entry file="file://$USER_HOME$/anaconda3/lib/python3.7/site-packages/scipy/sparse/base.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="10001">
@@ -368,51 +536,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../RecSys_Course_2018-master/data/DataSplitter_k_fold.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-6050" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../RecSys_Course_2018-master/run_all_algorithms.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
+    <entry file="file://$PROJECT_DIR$/../RecSys_Course_2018-master/data/DataSplitter_k_fold.py" />
+    <entry file="file://$PROJECT_DIR$/../RecSys_Course_2018-master/run_all_algorithms.py" />
     <entry file="file://$PROJECT_DIR$/data/run_all_algorithms.py" />
-    <entry file="file://$PROJECT_DIR$/../RecommenderSystem18-19-master/main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="55">
-          <caret line="146" column="29" selection-start-line="146" selection-start-column="29" selection-end-line="146" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../prova.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="21" lean-forward="true" selection-start-line="21" selection-end-line="21" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/../RecommenderSystem18-19-master/main.py" />
+    <entry file="file://$PROJECT_DIR$/../prova.py" />
     <entry file="file://$PROJECT_DIR$/data/DataReader.py" />
     <entry file="file://$PROJECT_DIR$/data/Movielens_10M/Movielens10MReader.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2655">
-          <folding>
-            <element signature="e#112#130#0" expanded="true" />
-          </folding>
-        </state>
+        <state relative-caret-position="-2655" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../RecSys_Course_2018-master/DataReader.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="14" column="15" selection-start-line="14" selection-start-column="15" selection-end-line="14" selection-end-column="15" />
-          <folding>
-            <element signature="e#1#19#0" expanded="true" />
-            <marker date="1543313876147" expanded="true" signature="174:197" ph="..." />
-            <marker date="1543313876147" expanded="true" signature="290:299" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/../RecSys_Course_2018-master/DataReader.py" />
     <entry file="file://$APPLICATION_HOME_DIR$/helpers/typeshed/stdlib/3/functools.pyi">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="210">
@@ -420,17 +555,183 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$USER_HOME$/anaconda3/lib/python3.7/site-packages/scipy/sparse/compressed.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2422">
+          <caret line="745" selection-start-line="745" selection-end-line="745" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Desktop/SLIM_BPR_Cython.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Base/Incremental_Training_Early_Stopping.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-20">
+          <caret line="13" column="6" selection-start-line="13" selection-start-column="6" selection-end-line="13" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/SLIM_BPR/Cython/compileCython.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="207">
+          <caret line="36" column="50" selection-start-line="36" selection-start-column="50" selection-end-line="36" selection-end-column="50" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/SLIM_BPR/SLIM_BPR_Python.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2696" />
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/ParameterTuning/BayesianSearch.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2057">
+        <state relative-caret-position="765">
           <caret line="54" column="8" selection-start-line="54" selection-start-column="8" selection-end-line="54" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MatrixFactorization/Cython/MF_RMSE.pyx">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-5280">
+          <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda3/pkgs/scikit-learn-0.19.2-py37h4f467ca_0/lib/python3.7/site-packages/sklearn/utils/validation.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="164">
+          <caret line="41" column="41" selection-start-line="41" selection-start-column="41" selection-end-line="41" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Base/Similarity/Compute_Similarity.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1437">
+          <caret line="106" column="50" selection-start-line="106" selection-start-column="50" selection-end-line="106" selection-end-column="50" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ParameterTuning/AbstractClassSearch.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-246">
+          <caret line="100" selection-start-line="100" selection-end-line="100" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MatrixFactorization/MatrixFactorization_RMSE.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-202" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MatrixFactorization/Cython/MatrixFactorization_Cython_Epoch.pyx">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="690">
+          <caret line="162" column="13" selection-start-line="162" selection-start-column="13" selection-end-line="162" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MatrixFactorization/Cython/MatrixFactorization_Cython.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="435">
+          <caret line="52" lean-forward="true" selection-start-line="52" selection-end-line="52" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/SLIM_BPR/Cython/SLIM_BPR_Cython_Epoch.pyx">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="197">
+          <caret line="119" column="31" selection-start-line="119" selection-start-column="24" selection-end-line="119" selection-end-column="31" />
+          <folding>
+            <element signature="e#341#410#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda3/lib/python3.7/site-packages/sklearn/linear_model/coordinate_descent.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="341">
+          <caret line="648" column="8" selection-start-line="648" selection-start-column="8" selection-end-line="648" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/SLIM_BPR/Cython/SLIM_BPR_Cython.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="186">
+          <caret line="95" column="60" selection-start-line="95" selection-start-column="60" selection-end-line="95" selection-end-column="60" />
+          <folding>
+            <element signature="e#112#152#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/KNN/ItemKNNCFRecommender.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="25" column="55" lean-forward="true" selection-start-line="25" selection-start-column="8" selection-end-line="25" selection-end-column="55" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/KNN/UserKNNCFRecommender.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="353">
+          <caret line="31" column="13" selection-start-line="31" selection-start-column="13" selection-end-line="31" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Base/SimilarityMatrixRecommender.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="294">
+          <caret line="24" column="13" selection-start-line="24" selection-start-column="13" selection-end-line="24" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/KNN/ItemKNNSimilarityHybridRecommender.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-28" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/KNN/ItemKNNCBFRecommender.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="232">
+          <caret line="25" column="8" selection-start-line="25" selection-start-column="8" selection-end-line="25" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Base/Recommender.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-295">
+          <caret line="11" column="6" selection-start-line="11" selection-start-column="6" selection-end-line="11" selection-end-column="6" />
+          <folding>
+            <element signature="e#91#109#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/DataReader.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="361">
+          <caret line="129" column="32" lean-forward="true" selection-start-line="128" selection-start-column="4" selection-end-line="129" selection-end-column="32" />
+          <folding>
+            <marker date="1543489147099" expanded="true" signature="174:219" ph="..." />
+            <marker date="1543489147099" expanded="true" signature="5585:5624" ph="..." />
+            <marker date="1543489147099" expanded="true" signature="5772:5919" ph="..." />
+            <marker date="1543489147099" expanded="true" signature="5885:5919" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/DataReaderWithoutValid.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="343">
+          <caret line="132" selection-start-line="132" selection-end-line="132" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/run_parameter_search.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="325">
-          <caret line="433" lean-forward="true" selection-start-line="433" selection-end-line="433" />
+        <state relative-caret-position="156">
+          <caret line="313" column="43" selection-start-line="313" selection-start-column="43" selection-end-line="313" selection-end-column="43" />
           <folding>
             <element signature="e#110#143#0" expanded="true" />
           </folding>
@@ -439,33 +740,56 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/SLIM_ElasticNet/SLIMElasticNetRecommender.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="426">
-          <caret line="66" column="43" selection-start-line="66" selection-start-column="43" selection-end-line="66" selection-end-column="43" />
+        <state relative-caret-position="407">
+          <caret line="171" lean-forward="true" selection-start-line="171" selection-end-line="171" />
         </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/KNN/ItemKNNCBFRecommender.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-38" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/run_all_algorithms.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="597">
-          <caret line="47" column="33" lean-forward="true" selection-start-line="47" selection-start-column="33" selection-end-line="47" selection-end-column="33" />
+        <state relative-caret-position="428">
+          <caret line="64" column="121" selection-start-line="64" selection-start-column="121" selection-end-line="64" selection-end-column="121" />
           <folding>
             <element signature="e#1#60#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/DataReader.py">
+    <entry file="file://$PROJECT_DIR$/prova.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="17" lean-forward="true" selection-start-line="17" selection-end-line="17" />
+        <state relative-caret-position="932">
+          <caret line="597" column="27" selection-start-line="597" selection-start-column="27" selection-end-line="597" selection-end-column="27" />
           <folding>
-            <marker date="1543314601398" expanded="true" signature="174:219" ph="..." />
-            <marker date="1543314601398" expanded="true" signature="5079:5114" ph="..." />
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MatrixFactorization/PureSVD.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="185">
+          <caret line="36" column="43" selection-start-line="36" selection-start-column="43" selection-end-line="36" selection-end-column="43" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda3/lib/python3.7/site-packages/sklearn/utils/extmath.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3405">
+          <caret line="227" column="4" selection-start-line="227" selection-start-column="4" selection-end-line="227" selection-end-column="4" />
+          <folding>
+            <element signature="e#278#309#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/HybridRecommender.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1095">
+          <caret line="73" column="283" selection-start-line="73" selection-start-column="283" selection-end-line="73" selection-end-column="283" />
+          <folding>
+            <element signature="e#0#47#0" expanded="true" />
+            <marker date="1543494549089" expanded="true" signature="1045:1046" ph="..." />
+            <marker date="1543494549089" expanded="true" signature="1045:1052" ph="..." />
           </folding>
         </state>
       </provider>

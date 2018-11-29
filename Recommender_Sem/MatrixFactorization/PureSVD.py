@@ -57,7 +57,7 @@ class PureSVDRecommender(Recommender):
 
         try:
 
-            item_weights = self.U[user_id_array, :].dot(self.s_Vt)
+            item_weights = self.U[user_id_array].dot(self.s_Vt)
 
         except:
             pass

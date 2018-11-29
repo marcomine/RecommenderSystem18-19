@@ -47,7 +47,7 @@ class SLIMElasticNetRecommender(SimilarityMatrixRecommender, Recommender):
         )
 
 
-    def fit(self, l1_penalty=0.1, l2_penalty=0.1, positive_only=True, topK = 100, alpha=1.0):
+    def fit(self, l1_penalty=0.001, l2_penalty=0, positive_only=True, topK = 100, alpha=1.0):
 
         self.l1_penalty = l1_penalty
         self.l2_penalty = l2_penalty
@@ -65,14 +65,14 @@ class SLIMElasticNetRecommender(SimilarityMatrixRecommender, Recommender):
 
         # initialize the ElasticNet model
         self.model = ElasticNet(alpha=alpha,
-                                l1_ratio=self.l1_ratio,
+                                l1_ratio=self.l1_penalty,
                                 positive=self.positive_only,
                                 fit_intercept=False,
                                 copy_X=False,
                                 precompute=True,
                                 selection='random',
                                 max_iter=100,
-                                tol=1e-4)
+                                tol=1e-3)
 
 
         URM_train = check_matrix(self.URM_train, 'csc', dtype=np.float32)
@@ -168,6 +168,8 @@ class SLIMElasticNetRecommender(SimilarityMatrixRecommender, Recommender):
         # generate the sparse weight matrix
         self.W_sparse = sps.csr_matrix((values[:numCells], (rows[:numCells], cols[:numCells])),
                                        shape=(n_items, n_items), dtype=np.float32)
+
+
 
 
 

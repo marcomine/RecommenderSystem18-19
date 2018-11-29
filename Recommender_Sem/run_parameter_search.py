@@ -6,6 +6,7 @@ Created on 22/11/17
 @author: Maurizio Ferrari Dacrema
 """
 from DataReader import dataReader
+#from DataReaderWithoutValid import dataReader
 from Base.NonPersonalizedRecommender import TopPop, Random
 from KNN.UserKNNCFRecommender import UserKNNCFRecommender
 from KNN.ItemKNNCFRecommender import ItemKNNCFRecommender
@@ -29,10 +30,10 @@ from ParameterTuning.AbstractClassSearch import DictionaryKeys
 def run_KNNCFRecommender_on_similarity_type(similarity_type, parameterSearch, URM_train, n_cases, output_root_path,
                                             metric_to_optimize):
     hyperparamethers_range_dictionary = {}
-    hyperparamethers_range_dictionary["topK"] = [5, 10, 20, 50, 100, 150, 200, 300, 400, 500, 600, 700, 800]
-    hyperparamethers_range_dictionary["shrink"] = [0, 10, 50, 100, 200, 300, 500, 1000]
+    hyperparamethers_range_dictionary["topK"] = [160]
+    hyperparamethers_range_dictionary["shrink"] = [22]
     hyperparamethers_range_dictionary["similarity"] = [similarity_type]
-    hyperparamethers_range_dictionary["normalize"] = [True, False]
+    hyperparamethers_range_dictionary["normalize"] = [True]
 
     if similarity_type == "asymmetric":
         hyperparamethers_range_dictionary["asymmetric_alpha"] = range(0, 2)
@@ -171,7 +172,7 @@ def runParameterSearch_Collaborative(recommender_class, URM_train, metric_to_opt
 
         if recommender_class is UserKNNCFRecommender:
 
-            similarity_type_list = ['cosine', 'jaccard', "asymmetric", "dice", "tversky"]
+            similarity_type_list = ['cosine']
 
             run_KNNCFRecommender_on_similarity_type_partial = partial(run_KNNCFRecommender_on_similarity_type,
                                                                       parameterSearch=parameterSearch,
@@ -195,7 +196,8 @@ def runParameterSearch_Collaborative(recommender_class, URM_train, metric_to_opt
 
         if recommender_class is ItemKNNCFRecommender:
 
-            similarity_type_list = ['cosine', 'jaccard', "asymmetric", "dice", "tversky"]
+            similarity_type_list = ['cosine']
+
 
             run_KNNCFRecommender_on_similarity_type_partial = partial(run_KNNCFRecommender_on_similarity_type,
                                                                       parameterSearch=parameterSearch,
@@ -289,10 +291,13 @@ def runParameterSearch_Collaborative(recommender_class, URM_train, metric_to_opt
             hyperparamethers_range_dictionary["sgd_mode"] = ["adagrad", "adam"]
             # hyperparamethers_range_dictionary["epochs"] = [1, 5, 10, 20, 30, 50, 70, 90, 110]
             hyperparamethers_range_dictionary["num_factors"] = [1, 5, 10, 20, 30, 50, 70, 90, 110]
-            hyperparamethers_range_dictionary["batch_size"] = [1]
+            hyperparamethers_range_dictionary["batch_size"] = [100, 200, 300, 400]
             hyperparamethers_range_dictionary["positive_reg"] = [0.0, 1e-3, 1e-6, 1e-9]
             hyperparamethers_range_dictionary["negative_reg"] = [0.0, 1e-3, 1e-6, 1e-9]
             hyperparamethers_range_dictionary["learning_rate"] = [1e-2, 1e-3, 1e-4, 1e-5]
+            hyperparamethers_range_dictionary["user_reg"] = [0.2, 0.4, 0.5, 0.7]
+            hyperparamethers_range_dictionary["positive_reg"] = [0.2, 0.4, 0.5, 0.7]
+            hyperparamethers_range_dictionary["negative_reg"] = [0.2, 0.4, 0.5, 0.7]
 
             recommenderDictionary = {DictionaryKeys.CONSTRUCTOR_POSITIONAL_ARGS: [URM_train],
                                      DictionaryKeys.CONSTRUCTOR_KEYWORD_ARGS: {'positive_threshold': 0},
@@ -320,21 +325,22 @@ def runParameterSearch_Collaborative(recommender_class, URM_train, metric_to_opt
 
         if recommender_class is SLIM_BPR_Cython:
             hyperparamethers_range_dictionary = {}
-            hyperparamethers_range_dictionary["topK"] = [5, 10, 20, 50, 100, 150, 200, 300, 400, 500, 600, 700, 800]
+            hyperparamethers_range_dictionary["topK"] = [800, 900, 1000, 1200]
             # hyperparamethers_range_dictionary["epochs"] = [1, 5, 10, 20, 30, 50, 70, 90, 110]
-            hyperparamethers_range_dictionary["sgd_mode"] = ["adagrad", "adam"]
-            hyperparamethers_range_dictionary["lambda_i"] = [0.0, 1e-3, 1e-6, 1e-9]
-            hyperparamethers_range_dictionary["lambda_j"] = [0.0, 1e-3, 1e-6, 1e-9]
+            hyperparamethers_range_dictionary["sgd_mode"] = ["adagrad"]
+            hyperparamethers_range_dictionary["lambda_i"] = [1e-6]
+            hyperparamethers_range_dictionary["lambda_j"] = [1e-9]
+            hyperparamethers_range_dictionary["learning_rate"] = [0.01, 0.001, 1e-4, 1e-5, 0.1]
 
             recommenderDictionary = {DictionaryKeys.CONSTRUCTOR_POSITIONAL_ARGS: [URM_train],
                                      DictionaryKeys.CONSTRUCTOR_KEYWORD_ARGS: {'train_with_sparse_weights': True,
                                                                                'symmetric': True,
-                                                                               'positive_threshold': 0},
+                                                                               'positive_threshold': 1},
                                      DictionaryKeys.FIT_POSITIONAL_ARGS: dict(),
-                                     DictionaryKeys.FIT_KEYWORD_ARGS: {"validation_every_n": 5,
+                                     DictionaryKeys.FIT_KEYWORD_ARGS: {"validation_every_n": 10,
                                                                        "stop_on_validation": True,
                                                                        "evaluator_object": evaluator_validation_earlystopping,
-                                                                       "lower_validatons_allowed": 10,
+                                                                       "lower_validatons_allowed":3,
                                                                        "validation_metric": metric_to_optimize},
                                      DictionaryKeys.FIT_RANGE_KEYWORD_ARGS: hyperparamethers_range_dictionary}
 
@@ -342,10 +348,10 @@ def runParameterSearch_Collaborative(recommender_class, URM_train, metric_to_opt
 
         if recommender_class is SLIMElasticNetRecommender:
             hyperparamethers_range_dictionary = {}
-            hyperparamethers_range_dictionary["topK"] = [5, 10, 20, 50, 100, 150, 200] # 300, 400, 500, 600, 700, 800]
-            hyperparamethers_range_dictionary["l1_penalty"] = [1.0, 0.0, 1e-2, 1e-4, 1e-6]
-            hyperparamethers_range_dictionary["l2_penalty"] = [100.0, 1.0, 0.0, 1e-2, 1e-4, 1e-6]
-            hyperparamethers_range_dictionary["alpha"] = [0.1, 0.3, 0.6, 0.8, 1.0]
+            hyperparamethers_range_dictionary["topK"] = [150, 200, 300, 800]
+            hyperparamethers_range_dictionary["l1_penalty"] = [1e-5,1e-6, 1e-4, 1e-3]
+            hyperparamethers_range_dictionary["l2_penalty"] = [1e-4]
+            hyperparamethers_range_dictionary["alpha"] = range(0,1)
 
             recommenderDictionary = {DictionaryKeys.CONSTRUCTOR_POSITIONAL_ARGS: [URM_train],
                                      DictionaryKeys.CONSTRUCTOR_KEYWORD_ARGS: {},
@@ -407,13 +413,14 @@ def read_data_split_and_search():
         os.makedirs(output_root_path)
 
     collaborative_algorithm_list = [
-        SLIMElasticNetRecommender
+        SLIM_BPR_Cython
+
     ]
 
     from ParameterTuning.AbstractClassSearch import EvaluatorWrapper
     from Base.Evaluation.Evaluator import SequentialEvaluator
 
-    evaluator_validation_earlystopping = SequentialEvaluator(URM_validation, cutoff_list=[10])
+    evaluator_validation_earlystopping = SequentialEvaluator(URM_validation, cutoff_list=[5])
     evaluator_test = SequentialEvaluator(URM_test, cutoff_list=[10])
 
     evaluator_validation = EvaluatorWrapper(evaluator_validation_earlystopping)
