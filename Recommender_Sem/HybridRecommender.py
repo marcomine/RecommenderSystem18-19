@@ -19,9 +19,13 @@ from Base.SimilarityMatrixRecommender import SimilarityMatrixRecommender
 #from DataReader import dataReader
 from DataReaderWithoutValid import dataReader
 
+from math import log
+import scipy.sparse as sps
+import numpy as np
 
-class HybridRecommender(Recommender):
 
+class HybridRecommender(SimilarityMatrixRecommender, Recommender):
+    RECOMMENDER_NAME = "ItemKNNCFRecommender"
 
     def __init__(self, URM_train):
 
@@ -30,7 +34,32 @@ class HybridRecommender(Recommender):
         self.URM_train=URM_train
         self.URM_train = check_matrix(URM_train, 'csr')
 
-    def fit(self, ICM_Art, ICM_Alb, w_itemcf=1.1, w_usercf=0.6, w_cbart=0.3, w_cbalb=0.6, w_slim=0.4, w_svd=0.6):
+
+
+    def fit(self, ICM_Art=None, ICM_Alb=None, item=None, user=None, SLIM=None, w_itemcf=1.1, w_usercf=0.6, w_cbart=0.3, w_cbalb=0.6, w_slim=0.4, w_svd=0.6, w_rp3=0.7):
+
+        self.item = item
+
+        self.user = user
+
+        self.SLIM = SLIM
+
+
+        self.CBArt = ItemKNNCBFRecommender(ICM=ICM_Art, URM_train=self.URM_train)
+
+        self.CBAlb = ItemKNNCBFRecommender(ICM=ICM_Alb, URM_train=self.URM_train)
+
+        self.SVD = PureSVDRecommender(URM_train=self.URM_train)
+
+        self.p3 = RP3betaRecommender(URM_train=self.URM_train)
+
+        self.p3.fit(alpha=0.7091718304597212, beta=0.264005617987932, min_rating=0, topK=150, implicit=False, normalize_similarity=True)
+
+        self.SVD.fit(num_factors=490)
+
+        self.simAlb = self.CBAlb.fit(topK=500, shrink=0, similarity='cosine', normalize=True, feature_weighting='none')
+
+        self.simArt = self.CBArt.fit(topK=800, shrink=1000, similarity='cosine', normalize=True, feature_weighting='none')
 
         self.w_itemcf = w_itemcf
 
@@ -44,31 +73,38 @@ class HybridRecommender(Recommender):
 
         self.w_svd = w_svd
 
-        self.item = ItemKNNCFRecommender(self.URM_train)
+        self.w_p3 = w_rp3
 
-        self.user = UserKNNCFRecommender(self.URM_train)
+        # nItems = self.URM_train.shape[1]
+        # URMidf = sps.lil_matrix((self.URM_train.shape[0], self.URM_train.shape[1]))
+        #
+        # for i in range(0, self.URM_train.shape[0]):
+        #     IDF_i = log(nItems / np.sum(self.URM_train[i]))
+        #     URMidf[i] = np.multiply(self.URM_train[i], IDF_i)
+        #
+        # self.URM_train = URMidf.tocsr()
+        self.W_sparse = self.item * self.w_itemcf +  self.simAlb * self.w_cbalb + self.simArt * self.w_cbart #+ self.SLIM * self.w_slim
 
-        self.CBArt = ItemKNNCBFRecommender(ICM=ICM_Art, URM_train=self.URM_train)
-
-        self.CBAlb = ItemKNNCBFRecommender(ICM=ICM_Alb, URM_train=self.URM_train)
-
-        self.SLIM = SLIMElasticNetRecommender(URM_train=self.URM_train)
-
-        self.SVD = PureSVDRecommender(URM_train=self.URM_train)
-
-        self.item.fit(topK=800, shrink=10, similarity='cosine', normalize=True)
-
-        self.user.fit(topK=400, shrink=0, similarity='cosine', normalize=True)
-
-        self.CBAlb.fit(topK=160, shrink=5, similarity='cosine', normalize=True, feature_weighting='none')
-
-        self.CBArt.fit(topK=160, shrink=5, similarity='cosine', normalize=True, feature_weighting='none')
-
-        self.SLIM.fit(l1_penalty=1e-05, l2_penalty=0, positive_only=True, topK=150, alpha = 0.00415637376180466)
 
 
 
 
     def compute_item_score(self, user_id):
 
-        return self.item.compute_item_score(user_id) * self.w_itemcf + self.user.compute_item_score(user_id)*self.w_usercf + self.CBAlb.compute_item_score(user_id)*self.w_cbalb + self.CBArt.compute_item_score(user_id)*self.w_cbart +self.SLIM.compute_item_score(user_id)*self.w_slim #+ self.SVD.compute_item_score(user_id)*self.w_svd
+        return  self.compute_score_item_based(user_id) + self.user.compute_item_score(user_id)*self.w_usercf + self.SVD.compute_item_score(user_id)*self.w_svd+  self.p3.compute_item_score(user_id)*self.w_p3
+
+
+    def saveModel(self, folder_path, file_name = None):
+
+        if file_name is None:
+            file_name = self.RECOMMENDER_NAME
+
+        print("{}: Saving model in file '{}'".format(self.RECOMMENDER_NAME, folder_path + file_name))
+
+        dictionary_to_save = {"sparse_weights": self.sparse_weights}
+
+
+
+
+
+        print("{}: Saving complete".format(self.RECOMMENDER_NAME))

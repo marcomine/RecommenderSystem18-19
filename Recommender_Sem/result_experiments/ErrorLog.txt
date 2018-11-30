@@ -1,3 +1,9 @@
 On recommender <class 'KNN.ItemKNNCFRecommender.ItemKNNCFRecommender'> Exception AbstractClassSearch: evaluator_validation must be provided
 On recommender <class 'KNN.UserKNNCFRecommender.UserKNNCFRecommender'> Exception AbstractClassSearch: evaluator_validation must be provided
 On recommender <class 'SLIM_BPR.Cython.SLIM_BPR_Cython.SLIM_BPR_Cython'> Exception Input contains NaN, infinity or a value too large for dtype('float64').
+On recommender <class 'HybridRecommender.HybridRecommender'> Exception Input contains NaN, infinity or a value too large for dtype('float64').
+On recommender <class 'HybridRecommender.HybridRecommender'> Exception name 'SLIM' is not defined
+On recommender <class 'HybridRecommender.HybridRecommender'> Exception Input contains NaN, infinity or a value too large for dtype('float64').
+On recommender <class 'SLIM_ElasticNet.SLIMElasticNetRecommender.SLIMElasticNetRecommender'> Exception Input contains NaN, infinity or a value too large for dtype('float64').
+On recommender <class 'MatrixFactorization.MatrixFactorization_RMSE.FunkSVD'> Exception Input contains NaN, infinity or a value too large for dtype('float64').
+On recommender <class 'HybridRecommender.HybridRecommender'> Exception Input contains NaN, infinity or a value too large for dtype('float64').

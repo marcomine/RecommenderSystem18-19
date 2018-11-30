@@ -155,7 +155,7 @@ class FunkSVD(Recommender):
 
 
 
-    def recommend(self, user_id, cutoff=None, remove_seen_flag=True, remove_top_pop_flag = False, remove_CustomItems = False):
+    def recommend(self, user_id, cutoff=None, remove_seen_flag=True, remove_top_pop_flag = False, remove_CustomItems_flag = False):
 
 
         if cutoff==None:
@@ -173,7 +173,7 @@ class FunkSVD(Recommender):
         if remove_top_pop_flag:
             scores = self._remove_TopPop_on_scores(scores_array)
 
-        if remove_CustomItems:
+        if remove_CustomItems_flag:
             scores = self._remove_CustomItems_on_scores(scores_array)
 
 

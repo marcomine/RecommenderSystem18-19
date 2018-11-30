@@ -53,7 +53,7 @@ class BayesianSearch(AbstractClassSearch):
 
 
     def search(self, dictionary, metric ="MAP", init_points = 5, n_cases = 30, output_root_path = None, parallelPoolSize = 2, parallelize = True,
-               save_model = "best"):
+               save_model = "no"):
 
         # Associate the params that will be returned by BayesianOpt object to those you want to save
         # E.g. with early stopping you know which is the optimal number of epochs only afterwards

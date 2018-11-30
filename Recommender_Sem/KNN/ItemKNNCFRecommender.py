@@ -34,6 +34,7 @@ class ItemKNNCFRecommender(SimilarityMatrixRecommender, Recommender):
         self.topK = topK
         self.shrink = shrink
 
+
         similarity = Compute_Similarity(self.URM_train, shrink=shrink, topK=topK, normalize=normalize, similarity = similarity, **similarity_args)
 
 
@@ -43,3 +44,4 @@ class ItemKNNCFRecommender(SimilarityMatrixRecommender, Recommender):
             self.W = similarity.compute_similarity()
             self.W = self.W.toarray()
 
+        return self.W_sparse

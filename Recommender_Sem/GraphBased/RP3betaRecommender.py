@@ -40,6 +40,7 @@ class RP3betaRecommender(SimilarityMatrixRecommender, Recommender):
         self.implicit = implicit
         self.normalize_similarity = normalize_similarity
 
+
         
         # if X.dtype != np.float32:
         #     print("RP3beta fit: For memory usage reasons, we suggest to use np.float32 as dtype for the dataset")

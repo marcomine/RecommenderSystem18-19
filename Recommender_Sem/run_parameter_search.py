@@ -16,15 +16,21 @@ from GraphBased.P3alphaRecommender import P3alphaRecommender
 from GraphBased.RP3betaRecommender import RP3betaRecommender
 
 from MatrixFactorization.Cython.MatrixFactorization_Cython import MatrixFactorization_BPR_Cython, \
-    MatrixFactorization_FunkSVD_Cython
+    MatrixFactorization_FunkSVD_Cython, MatrixFactorization_AsySVD_Cython
 from MatrixFactorization.PureSVD import PureSVDRecommender
+
+
 
 from ParameterTuning.BayesianSearch import BayesianSearch
 
 import traceback, pickle
 from Utils.PoolWithSubprocess import PoolWithSubprocess
 
+from HybridRecommender2 import HybridRecommender
+
 from ParameterTuning.AbstractClassSearch import DictionaryKeys
+
+from MatrixFactorization.MatrixFactorization_RMSE import FunkSVD
 
 
 def run_KNNCFRecommender_on_similarity_type(similarity_type, parameterSearch, URM_train, n_cases, output_root_path,
@@ -126,10 +132,10 @@ def runParameterSearch_Content(recommender_class, URM_train, ICM_object, ICM_nam
             run_KNNCBFRecommender_on_similarity_type_partial(similarity_type)
 
 
-def runParameterSearch_Collaborative(recommender_class, URM_train, metric_to_optimize="PRECISION",
+def runParameterSearch_Collaborative(recommender_class, URM_train, ICM_1, ICM_2, metric_to_optimize="PRECISION",
                                      evaluator_validation=None, evaluator_test=None,
                                      evaluator_validation_earlystopping=None,
-                                     output_root_path="result_experiments/", parallelizeKNN=True, n_cases=30):
+                                     output_root_path="result_experiments/", parallelizeKNN=True, n_cases=100):
     from ParameterTuning.AbstractClassSearch import DictionaryKeys
 
     # If directory does not exist, create
@@ -251,12 +257,54 @@ def runParameterSearch_Collaborative(recommender_class, URM_train, metric_to_opt
 
         ##########################################################################################################
 
+        if recommender_class is HybridRecommender:
+
+
+
+
+            hyperparamethers_range_dictionary = {}
+            hyperparamethers_range_dictionary["w_itemcf"] = [(x * 0.05)+1 for x in range(0, 20)]
+            hyperparamethers_range_dictionary["w_usercf"] = [x * 0.05 for x in range(0, 20)]
+            hyperparamethers_range_dictionary["w_cbart"] = [x * 0.05 for x in range(0, 20)]
+            hyperparamethers_range_dictionary["w_cbalb"] = [x * 0.05 for x in range(0, 20)]
+            hyperparamethers_range_dictionary["w_slim"] = [x * 0.05 for x in range(0, 20)]
+            hyperparamethers_range_dictionary["w_svd"] = [x * 0.05 for x in range(0, 20)]
+            hyperparamethers_range_dictionary["w_rp3"] = [x * 0.05 for x in range(0, 20)]
+
+            item = ItemKNNCFRecommender(URM_train)
+
+            user = UserKNNCFRecommender(URM_train)
+
+            SLIM = SLIMElasticNetRecommender(URM_train=URM_train)
+
+            item.fit(topK=800, shrink=10, similarity='cosine', normalize=True)
+
+            user.fit(topK=400, shrink=0, similarity='cosine', normalize=True)
+
+            SLIM.fit(l1_penalty=1e-05, l2_penalty=0, positive_only=True, topK=150, alpha=0.00415637376180466)
+
+            recommenderDictionary = {DictionaryKeys.CONSTRUCTOR_POSITIONAL_ARGS: [URM_train],
+                                     DictionaryKeys.CONSTRUCTOR_KEYWORD_ARGS: {},
+                                     DictionaryKeys.FIT_POSITIONAL_ARGS: dict(),
+                                     DictionaryKeys.FIT_KEYWORD_ARGS: {"ICM_Art": ICM_1,
+                                                                       "ICM_Alb": ICM_2,
+                                                                       "item": item,
+                                                                       "user": user,
+                                                                       "SLIM": SLIM,
+
+
+                                                                       },
+                                     DictionaryKeys.FIT_RANGE_KEYWORD_ARGS: hyperparamethers_range_dictionary}
+
+        ##########################################################################################################
+
         if recommender_class is RP3betaRecommender:
             hyperparamethers_range_dictionary = {}
             hyperparamethers_range_dictionary["topK"] = [5, 10, 20, 50, 100, 150, 200, 300, 400, 500, 600, 700, 800]
             hyperparamethers_range_dictionary["alpha"] = range(0, 2)
             hyperparamethers_range_dictionary["beta"] = range(0, 2)
-            hyperparamethers_range_dictionary["normalize_similarity"] = [True, False]
+            hyperparamethers_range_dictionary["normalize_similarity"] = [True]
+            hyperparamethers_range_dictionary["implicit"] = [True]
 
             recommenderDictionary = {DictionaryKeys.CONSTRUCTOR_POSITIONAL_ARGS: [URM_train],
                                      DictionaryKeys.CONSTRUCTOR_KEYWORD_ARGS: {},
@@ -270,7 +318,7 @@ def runParameterSearch_Collaborative(recommender_class, URM_train, metric_to_opt
             hyperparamethers_range_dictionary = {}
             hyperparamethers_range_dictionary["sgd_mode"] = ["adagrad", "adam"]
             # hyperparamethers_range_dictionary["epochs"] = [1, 5, 10, 20, 30, 50, 70, 90, 110]
-            hyperparamethers_range_dictionary["num_factors"] = [1, 5, 10, 20, 30, 50, 70, 90, 110]
+            hyperparamethers_range_dictionary["num_factors"] = range(100, 1000, 20)
             hyperparamethers_range_dictionary["reg"] = [0.0, 1e-3, 1e-6, 1e-9]
             hyperparamethers_range_dictionary["learning_rate"] = [1e-2, 1e-3, 1e-4, 1e-5]
 
@@ -284,23 +332,40 @@ def runParameterSearch_Collaborative(recommender_class, URM_train, metric_to_opt
                                                                        "validation_metric": metric_to_optimize},
                                      DictionaryKeys.FIT_RANGE_KEYWORD_ARGS: hyperparamethers_range_dictionary}
 
+
+
         ##########################################################################################################
 
-        if recommender_class is MatrixFactorization_BPR_Cython:
+        if recommender_class is FunkSVD:
+            hyperparamethers_range_dictionary = {}
+
+            # hyperparamethers_range_dictionary["epochs"] = [1, 5, 10, 20, 30, 50, 70, 90, 110]
+            hyperparamethers_range_dictionary["num_factors"] = range(100, 1000, 20)
+            hyperparamethers_range_dictionary["reg"] = [0.0, 1e-03, 1e-06, 1e-09]
+            hyperparamethers_range_dictionary["learning_rate"] = [1e-02, 1e-03]
+
+            recommenderDictionary = {DictionaryKeys.CONSTRUCTOR_POSITIONAL_ARGS: [URM_train],
+                                     DictionaryKeys.CONSTRUCTOR_KEYWORD_ARGS: {},
+                                     DictionaryKeys.FIT_POSITIONAL_ARGS: dict(),
+                                     DictionaryKeys.FIT_KEYWORD_ARGS: dict(),
+                                     DictionaryKeys.FIT_RANGE_KEYWORD_ARGS: hyperparamethers_range_dictionary}
+
+        ##########################################################################################################
+
+        if recommender_class is MatrixFactorization_AsySVD_Cython:
             hyperparamethers_range_dictionary = {}
             hyperparamethers_range_dictionary["sgd_mode"] = ["adagrad", "adam"]
             # hyperparamethers_range_dictionary["epochs"] = [1, 5, 10, 20, 30, 50, 70, 90, 110]
-            hyperparamethers_range_dictionary["num_factors"] = [1, 5, 10, 20, 30, 50, 70, 90, 110]
+            hyperparamethers_range_dictionary["num_factors"] = range(100, 500, 10)
             hyperparamethers_range_dictionary["batch_size"] = [100, 200, 300, 400]
             hyperparamethers_range_dictionary["positive_reg"] = [0.0, 1e-3, 1e-6, 1e-9]
             hyperparamethers_range_dictionary["negative_reg"] = [0.0, 1e-3, 1e-6, 1e-9]
             hyperparamethers_range_dictionary["learning_rate"] = [1e-2, 1e-3, 1e-4, 1e-5]
-            hyperparamethers_range_dictionary["user_reg"] = [0.2, 0.4, 0.5, 0.7]
-            hyperparamethers_range_dictionary["positive_reg"] = [0.2, 0.4, 0.5, 0.7]
-            hyperparamethers_range_dictionary["negative_reg"] = [0.2, 0.4, 0.5, 0.7]
+            hyperparamethers_range_dictionary["user_reg"] = [1e-3, 1e-4, 1e-5, 1e-6]
+
 
             recommenderDictionary = {DictionaryKeys.CONSTRUCTOR_POSITIONAL_ARGS: [URM_train],
-                                     DictionaryKeys.CONSTRUCTOR_KEYWORD_ARGS: {'positive_threshold': 0},
+                                     DictionaryKeys.CONSTRUCTOR_KEYWORD_ARGS: {'positive_threshold': 1},
                                      DictionaryKeys.FIT_POSITIONAL_ARGS: dict(),
                                      DictionaryKeys.FIT_KEYWORD_ARGS: {"validation_every_n": 5,
                                                                        "stop_on_validation": True,
@@ -348,7 +413,7 @@ def runParameterSearch_Collaborative(recommender_class, URM_train, metric_to_opt
 
         if recommender_class is SLIMElasticNetRecommender:
             hyperparamethers_range_dictionary = {}
-            hyperparamethers_range_dictionary["topK"] = [150, 200, 300, 800]
+            hyperparamethers_range_dictionary["topK"] = [3300, 4300, 5300, 6300, 7300]
             hyperparamethers_range_dictionary["l1_penalty"] = [1e-5,1e-6, 1e-4, 1e-3]
             hyperparamethers_range_dictionary["l2_penalty"] = [1e-4]
             hyperparamethers_range_dictionary["alpha"] = range(0,1)
@@ -406,6 +471,9 @@ def read_data_split_and_search():
     URM_validation = data.get_URM_validation()
     URM_test = data.get_URM_test()
 
+    ICM_alb = data.ICM_Alb
+    ICM_art = data.ICM_Art
+
     output_root_path = "result_experiments/"
 
     # If directory does not exist, create
@@ -413,14 +481,14 @@ def read_data_split_and_search():
         os.makedirs(output_root_path)
 
     collaborative_algorithm_list = [
-        SLIM_BPR_Cython
+        HybridRecommender
 
     ]
 
     from ParameterTuning.AbstractClassSearch import EvaluatorWrapper
     from Base.Evaluation.Evaluator import SequentialEvaluator
 
-    evaluator_validation_earlystopping = SequentialEvaluator(URM_validation, cutoff_list=[5])
+    evaluator_validation_earlystopping = SequentialEvaluator(URM_validation, cutoff_list=[10])
     evaluator_test = SequentialEvaluator(URM_test, cutoff_list=[10])
 
     evaluator_validation = EvaluatorWrapper(evaluator_validation_earlystopping)
@@ -428,6 +496,8 @@ def read_data_split_and_search():
 
     runParameterSearch_Collaborative_partial = partial(runParameterSearch_Collaborative,
                                                        URM_train=URM_train,
+                                                       ICM_1 = ICM_art,
+                                                       ICM_2 = ICM_alb,
                                                        metric_to_optimize="MAP",
                                                        evaluator_validation_earlystopping=evaluator_validation_earlystopping,
                                                        evaluator_validation=evaluator_validation,

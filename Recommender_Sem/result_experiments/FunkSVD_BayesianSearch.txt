@@ -1,0 +1,7 @@
+BayesianSearch: Testing config: {'num_factors': 603.8999857720203, 'reg': 0.001, 'learning_rate': 0.001} - Exception recommend() got an unexpected keyword argument 'remove_CustomItems_flag'
+BayesianSearch: Testing config: {'num_factors': 577.1503177992156, 'reg': 0.0, 'learning_rate': 0.01} - Exception recommend() got an unexpected keyword argument 'remove_CustomItems_flag'
+BayesianSearch: Testing config: {'num_factors': 821.4092245735313, 'reg': 0.001, 'learning_rate': 0.001} - Exception only integer scalar arrays can be converted to a scalar index
+BayesianSearch: Testing config: {'num_factors': 124.17190599390217, 'reg': 0.001, 'learning_rate': 0.01} - Exception only integer scalar arrays can be converted to a scalar index
+BayesianSearch: Testing config: {'num_factors': 727.4168603716173, 'reg': 0.001, 'learning_rate': 0.01} - Exception only integer scalar arrays can be converted to a scalar index
+BayesianSearch: Testing config: {'num_factors': 126.56863420598071, 'reg': 0.001, 'learning_rate': 0.001} - Exception only integer scalar arrays can be converted to a scalar index
+BayesianSearch: Testing config: {'num_factors': 926.2159548636458, 'reg': 0.001, 'learning_rate': 0.01} - Exception only integer scalar arrays can be converted to a scalar index

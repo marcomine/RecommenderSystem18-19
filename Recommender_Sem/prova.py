@@ -515,8 +515,8 @@ class ItemCBFKNNRecommender(object):
 
         self.W_sparse_CF = similarity_object_CF.compute_similarity()
 
-        similarity_object_CF_user = Compute_Similarity_Python(self.URM.T, shrink=22,
-                                                              topK=70, normalize=normalize,
+        similarity_object_CF_user = Compute_Similarity_Python(self.URM.T, shrink=0,
+                                                              topK=400, normalize=normalize,
                                                               similarity="cosine")
 
         self.W_sparse_CF_user = similarity_object_CF_user.compute_similarity()
@@ -557,8 +557,7 @@ class ItemCBFKNNRecommender(object):
         self.URM_alb = self.URM.dot(self.W_sparse_alb)
         self.URM_CF_user = self.W_sparse_CF_user.dot(self.URM)
 
-        self.URM_final_hybrid = self.URM_CF *  1.1+ (
-                    self.URM_art * 0.5 + self.URM_alb * 1) * 0.6 + self.URM_CF_user * 0.6 + self.URM_SLIM * 0.7
+        self.URM_final_hybrid = self.URM_CF *  1.25 + self.URM_art * 0.6 + self.URM_alb * 0.5 + self.URM_CF_user * 0.6 + self.URM_SLIM * 0.9
 
         self.pen_mask = np.ones(self.URM_final_hybrid.shape[1], dtype=int)
 
@@ -575,8 +574,7 @@ class ItemCBFKNNRecommender(object):
 
         recs = ranking[:at]
 
-        for i in recs:
-            self.pen_mask[i] *= 1.1
+
 
         return recs
 
@@ -594,7 +592,7 @@ class ItemCBFKNNRecommender(object):
 
 reader = dataReader()
 recommender = ItemCBFKNNRecommender(reader.mat_complete, matTrack_Artist, matTrack_Album)
-recommender.fit(shrink=22.0, topK=160)
+recommender.fit(shrink=22, topK=160)
 with open('Hybrid_with_SLIM.csv', 'w', newline='') as f:
     thewriter = csv.writer(f)
     thewriter.writerow(['playlist_id', 'track_ids'])

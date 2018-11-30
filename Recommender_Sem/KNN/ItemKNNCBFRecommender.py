@@ -39,6 +39,7 @@ class ItemKNNCBFRecommender(SimilarityMatrixRecommender, Recommender):
         self.topK = topK
         self.shrink = shrink
 
+
         if feature_weighting not in self.FEATURE_WEIGHTING_VALUES:
             raise ValueError("Value for 'feature_weighting' not recognized. Acceptable values are {}, provided was '{}'".format(self.FEATURE_WEIGHTING_VALUES, feature_weighting))
 
@@ -60,4 +61,8 @@ class ItemKNNCBFRecommender(SimilarityMatrixRecommender, Recommender):
         else:
             self.W = similarity.compute_similarity()
             self.W = self.W.toarray()
+
+
+
+        return self.W_sparse
 

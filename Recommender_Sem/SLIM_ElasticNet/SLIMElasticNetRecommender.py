@@ -169,6 +169,8 @@ class SLIMElasticNetRecommender(SimilarityMatrixRecommender, Recommender):
         self.W_sparse = sps.csr_matrix((values[:numCells], (rows[:numCells], cols[:numCells])),
                                        shape=(n_items, n_items), dtype=np.float32)
 
+        return self.W_sparse
+
 
 
 
