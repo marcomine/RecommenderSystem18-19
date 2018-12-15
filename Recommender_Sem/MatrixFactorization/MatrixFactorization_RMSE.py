@@ -7,12 +7,14 @@ Created on 23/10/17
 """
 
 import logging
-
+import scipy.sparse as sps
 import numpy as np
 from Base.Recommender_utils import check_matrix
 
 from Base.Recommender import Recommender
 from MatrixFactorization.Cython.MF_RMSE import FunkSVD_sgd, AsySVD_sgd, AsySVD_compute_user_factors, BPRMF_sgd
+
+
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(
@@ -56,7 +58,7 @@ class FunkSVD(Recommender):
     def fit(self, num_factors=50,
                  learning_rate=0.01,
                  reg=0.015,
-                 epochs=10,
+                 epochs=1,
                  init_mean=0.0,
                  init_std=0.1,
                  lrate_decay=1.0,
@@ -86,6 +88,12 @@ class FunkSVD(Recommender):
         self.U, self.V = FunkSVD_sgd(self.URM_train, self.num_factors, self.learning_rate, self.reg, self.epochs, self.init_mean,
                                      self.init_std,
                                      self.lrate_decay, self.rnd_seed)
+
+        self.U = sps.coo_matrix(self.U)
+        self.U = self.U.tocsr()
+        self.V = sps.coo_matrix(self.V)
+        self.V = self.V.tocsr()
+
 
     # def recommend(self, user_id, n=None, exclude_seen=True):
     #     scores = np.dot(self.U[user_id], self.V.T)
@@ -155,42 +163,125 @@ class FunkSVD(Recommender):
 
 
 
-    def recommend(self, user_id, cutoff=None, remove_seen_flag=True, remove_top_pop_flag = False, remove_CustomItems_flag = False):
+    def recommend(self, user_id_array, cutoff=None, remove_seen_flag=True, remove_top_pop_flag = False, remove_CustomItems_flag = False):
 
 
-        if cutoff==None:
-            cutoff= self.URM_train.shape[1] - 1
-
-        scores_array = np.dot(self.U[user_id], self.V.T)
-
-        if self.normalize:
-            raise ValueError("Not implemented")
+        # if cutoff==None:
+        #     cutoff= self.URM_train.shape[1] - 1
 
 
-        if remove_seen_flag:
-            scores = self._remove_seen_on_scores(user_id, scores_array)
+
+        # if self.normalize:
+        #     raise ValueError("Not implemented")
+        #
+        #
+        # if remove_seen_flag:
+        #     scores = self._remove_seen_on_scores(user_id, scores_array)
+        #
+        # if remove_top_pop_flag:
+        #     scores = self._remove_TopPop_on_scores(scores_array)
+        #
+        # if remove_CustomItems_flag:
+        #     scores = self._remove_CustomItems_on_scores(scores_array)
+        #
+        #
+        # # rank items and mirror column to obtain a ranking in descending score
+        # #ranking = scores.argsort()
+        # #ranking = np.flip(ranking, axis=0)
+        #
+        # # Sorting is done in three steps. Faster then plain np.argsort for higher number of items
+        # # - Partition the data to extract the set of relevant items
+        # # - Sort only the relevant items
+        # # - Get the original item index
+        # relevant_items_partition = (-scores_array).argpartition(cutoff)[0:cutoff]
+        # relevant_items_partition_sorting = np.argsort(-scores_array[relevant_items_partition])
+        # ranking = relevant_items_partition[relevant_items_partition_sorting]
+        #
+        #
+        # return ranking
+
+        # If is a scalar transform it in a 1-cell array
+        if np.isscalar(user_id_array):
+            user_id_array = np.atleast_1d(user_id_array)
+            single_user = True
+        else:
+            single_user = False
+
+        if cutoff is None:
+            cutoff = self.URM_train.shape[1] - 1
+
+        # Compute the scores using the model-specific function
+        # Vectorize over all users in user_id_array
+        scores_batch = np.dot(self.U[user_id_array], self.V.T)
+
+        # if self.normalize:
+        #     # normalization will keep the scores in the same range
+        #     # of value of the ratings in dataset
+        #     user_profile = self.URM_train[user_id]
+        #
+        #     rated = user_profile.copy()
+        #     rated.data = np.ones_like(rated.data)
+        #     if self.sparse_weights:
+        #         den = rated.dot(self.W_sparse).toarray().ravel()
+        #     else:
+        #         den = rated.dot(self.W).ravel()
+        #     den[np.abs(den) < 1e-6] = 1.0  # to avoid NaNs
+        #     scores /= den
+
+        for user_index in range(len(user_id_array)):
+
+            user_id = user_id_array[user_index]
+
+            if remove_seen_flag:
+                scores_batch[user_index] = self._remove_seen_on_scores(user_id, scores_batch[user_index])
+
+            # Sorting is done in three steps. Faster then plain np.argsort for higher number of items
+            # - Partition the data to extract the set of relevant items
+            # - Sort only the relevant items
+            # - Get the original item index
+            # relevant_items_partition = (-scores_user).argpartition(cutoff)[0:cutoff]
+            # relevant_items_partition_sorting = np.argsort(-scores_user[relevant_items_partition])
+            # ranking = relevant_items_partition[relevant_items_partition_sorting]
+            #
+            # ranking_list.append(ranking)
 
         if remove_top_pop_flag:
-            scores = self._remove_TopPop_on_scores(scores_array)
+            scores_batch = self._remove_TopPop_on_scores(scores_batch)
 
         if remove_CustomItems_flag:
-            scores = self._remove_CustomItems_on_scores(scores_array)
+            scores_batch = self._remove_CustomItems_on_scores(scores_batch)
 
+        # scores_batch = np.arange(0,3260).reshape((1, -1))
+        # scores_batch = np.repeat(scores_batch, 1000, axis = 0)
 
-        # rank items and mirror column to obtain a ranking in descending score
-        #ranking = scores.argsort()
-        #ranking = np.flip(ranking, axis=0)
+        # relevant_items_partition is block_size x cutoff
+        relevant_items_partition = (-scores_batch).argpartition(cutoff, axis=1)[:, 0:cutoff]
 
-        # Sorting is done in three steps. Faster then plain np.argsort for higher number of items
-        # - Partition the data to extract the set of relevant items
-        # - Sort only the relevant items
-        # - Get the original item index
-        relevant_items_partition = (-scores_array).argpartition(cutoff)[0:cutoff]
-        relevant_items_partition_sorting = np.argsort(-scores_array[relevant_items_partition])
-        ranking = relevant_items_partition[relevant_items_partition_sorting]
+        # Get original value and sort it
+        # [:, None] adds 1 dimension to the array, from (block_size,) to (block_size,1)
+        # This is done to correctly get scores_batch value as [row, relevant_items_partition[row,:]]
+        relevant_items_partition_original_value = scores_batch[
+            np.arange(scores_batch.shape[0])[:, None], relevant_items_partition]
+        relevant_items_partition_sorting = np.argsort(-relevant_items_partition_original_value, axis=1)
+        ranking = relevant_items_partition[
+            np.arange(relevant_items_partition.shape[0])[:, None], relevant_items_partition_sorting]
 
+        ranking_list = ranking.tolist()
 
-        return ranking
+        # Return single list for one user, instead of list of lists
+        if single_user:
+            ranking_list = ranking_list[0]
+
+        return ranking_list
+
+    def _remove_seen_on_scores(self, user_id, scores):
+
+        assert self.URM_train.getformat() == "csr", "Recommender_Base_Class: URM_train is not CSR, this will cause errors in filtering seen items"
+
+        seen = self.URM_train.indices[self.URM_train.indptr[user_id]:self.URM_train.indptr[user_id + 1]]
+
+        scores[0, seen] = -np.inf
+        return scores
 
 
 

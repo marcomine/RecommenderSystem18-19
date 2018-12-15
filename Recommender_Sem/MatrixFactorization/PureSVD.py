@@ -50,6 +50,8 @@ class PureSVDRecommender(Recommender):
         # truncatedSVD
 
         #U, s, Vt =
+        self.U = self.U
+        return self.U, self.s_Vt
 
 
 

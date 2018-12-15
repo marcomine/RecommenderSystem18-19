@@ -5,6 +5,9 @@ import pandas as pd
 import csv
 import os
 from DataReaderWithoutValid import dataReader
+from GraphBased.P3alphaRecommender import P3alphaRecommender
+from GraphBased.RP3betaRecommender import RP3betaRecommender
+from MatrixFactorization.PureSVD import PureSVDRecommender
 from SLIM_ElasticNet.SLIMElasticNetRecommender import SLIMElasticNetRecommender
 
 
@@ -445,53 +448,8 @@ class Compute_Similarity_Python:
             return W_sparse
 
 
-# Any results you write to the current directory are saved as output.
-tracks = pd.read_csv("/Users/samuelelanghi/Documents/GitHub/RecommenderSystem18-19/Recommender_Sem/data_raw/tracks.csv")
-train = pd.read_csv("/Users/samuelelanghi/Documents/GitHub/RecommenderSystem18-19/Recommender_Sem/data_raw/train.csv")
-targetPlaylist = pd.read_csv("/Users/samuelelanghi/Documents/GitHub/RecommenderSystem18-19/Recommender_Sem/data_raw/target_playlists.csv")
-
-targetPlaylistCol = targetPlaylist.playlist_id.tolist()
-
-trackCol = tracks.track_id.tolist()
-
-playlistCol = train.playlist_id.tolist()
-
-tracklistCol = train.track_id.tolist()
-
-albumIdCol = tracks.album_id.tolist()  # column ALBUM_ID from tracks.csv
-# albumIdCol.sort()                                   #column ALBUM_ID ordered
-albumIdCol_unique = list(set(albumIdCol))  # column ALBUM_ID ordered, without replicated elements
-
-artistIdCol = tracks.artist_id.tolist()  # column ARTIST_ID from tracks.csv
-# artistIdCol.sort()                                   #column ARTIST_ID ordered
-artistIdCol_unique = list(set(artistIdCol))  # column ARTIST_ID ordered, without replicated elements
-
-durSecCol = tracks.duration_sec.tolist()  # column DURATION_SEC from tracks.csv
-# durSecCol.sort()                                      #column DURATION_SEC ordered
-durSecCol_unique = list(set(durSecCol))  # column DURATION_SEC ordered, without replicated elements
-
-numTrack = len(trackCol)
-numPlayList = len(playlistCol)
-
-albumIdArtistIdCol = albumIdCol + artistIdCol
-albumIdArtistIdCol
-
-mat = sps.coo_matrix(((np.ones(numPlayList, dtype=int)), (playlistCol, tracklistCol)))
-mat = mat.tocsr()
-
-matTrack_Album = sps.coo_matrix(
-    ((np.ones(numTrack, dtype=int)), (trackCol, albumIdCol)))  # sparse matrix ROW: track_id COLUMN: album_id
-matTrack_Album = matTrack_Album.tocsr()
-
-matTrack_Artist = sps.coo_matrix(
-    ((np.ones(numTrack, dtype=int)), (trackCol, artistIdCol)))  # sparse matrix ROW: track_id COLUMN: artist_id
-matTrack_Artist = matTrack_Artist.tocsr()
 
 
-# matTrack_Dur = sps.coo_matrix(((np.ones(numTrack, dtype=int)), (trackCol, durSecCol)))       #sparse matrix ROW: track_id COLUMN: duration_sec
-# matTrack_Dur = matTrack_Dur.tocsr()
-
-# NUOVA AGGIUNTA
 
 
 class ItemCBFKNNRecommender(object):
@@ -502,81 +460,165 @@ class ItemCBFKNNRecommender(object):
         self.ICM_Alb = ICM_Alb
         # self.ICM_Dur = ICM_Dur
 
+
     def fit(self, topK=160, shrink=22, normalize=True):
+
+        self.svd = PureSVDRecommender(URM_train=self.URM)
+
+        W_sparse_svd_U, W_sparse_svd_s_Vt = self.svd.fit(490)
+
+        #p3_alpha = P3alphaRecommender(URM_train=self.URM)
+
+        #W_sparse_p3_alpha = p3_alpha.fit(topK=200, alpha=0.7312418567825512, normalize_similarity=True)
+
+        self.p3 = RP3betaRecommender(URM_train=self.URM)
+
+        W_sparse_p3 = self.p3.fit(alpha=0.8729488414975284, beta= 0.2541372492523202, min_rating=0, topK=150, implicit=True, normalize_similarity=True)
 
         SLIM = SLIMElasticNetRecommender(URM_train=self.URM)
 
-
-        self.W_sparse_SLIM = SLIM.fit(l1_penalty=1e-5, l2_penalty=0, positive_only=True, topK=150, alpha=0.004156373761804666)
+        W_sparse_slim = SLIM.fit(l1_penalty=1.95e-06, l2_penalty=0, positive_only=True, topK=1500, alpha=0.00165)
+        #     #SLIM.fit(l1_penalty=1e-05, l2_penalty=0, positive_only=True, topK=150, alpha=0.00415637376180466)
 
         similarity_object_CF = Compute_Similarity_Python(self.URM, shrink=10,
                                                          topK=800, normalize=normalize,
                                                          similarity="cosine")
 
-        self.W_sparse_CF = similarity_object_CF.compute_similarity()
+        W_sparse_CF = similarity_object_CF.compute_similarity()
 
         similarity_object_CF_user = Compute_Similarity_Python(self.URM.T, shrink=0,
                                                               topK=400, normalize=normalize,
                                                               similarity="cosine")
 
-        self.W_sparse_CF_user = similarity_object_CF_user.compute_similarity()
+        W_sparse_CF_user = similarity_object_CF_user.compute_similarity()
         # self.W_sparse_CF_user = normalize(self.W_sparse_CF_user)
 
-        similarity_object_artist = Compute_Similarity_Python(self.ICM_art.T, shrink=5,
-                                                             topK=topK, normalize=normalize,
+        similarity_object_artist = Compute_Similarity_Python(self.ICM_art.T, shrink=0,
+                                                             topK=500, normalize=normalize,
                                                              similarity="cosine")
 
-        self.W_sparse_art = similarity_object_artist.compute_similarity()
+        W_sparse_art = similarity_object_artist.compute_similarity()
 
-        similarity_object_album = Compute_Similarity_Python(self.ICM_Alb.T, shrink=5,
-                                                            topK=topK, normalize=normalize,
+        similarity_object_album = Compute_Similarity_Python(self.ICM_Alb.T, shrink=1000,
+                                                            topK=500, normalize=normalize,
                                                             similarity="cosine")
 
-        self.W_sparse_alb = similarity_object_album.compute_similarity()
-
-        # similarity_object_dur = Compute_Similarity_Python(self.ICM_Dur.T, shrink=shrink,
-        #                                            topK=topK, normalize=normalize,
-        #                                           similarity = similarity)
-
-        #  self.W_sparse_dur = similarity_object_dur.compute_similarity()
+        W_sparse_alb = similarity_object_album.compute_similarity()
 
 
 
-        nItems = self.URM.shape[1]
-        URMidf = sps.lil_matrix((self.URM.shape[0], self.URM.shape[1]))
 
-        for i in range(0, self.URM.shape[0]):
-            IDF_i = log(nItems / np.sum(self.URM[i]))
-            URMidf[i] = np.multiply(self.URM[i], IDF_i)
 
-        self.URM = URMidf.tocsr()
+        # nItems = self.URM.shape[1]
+        # URMidf = sps.lil_matrix((self.URM.shape[0], self.URM.shape[1]))
+        #
+        # for i in range(0, self.URM.shape[0]):
+        #     IDF_i = log(nItems / np.sum(self.URM[i]))
+        #     URMidf[i] = np.multiply(self.URM[i], IDF_i)
+        #
+        # self.URM = URMidf.tocsr()
 
-        self.URM_SLIM = self.URM.dot(self.W_sparse_SLIM)
-        self.URM_CF = self.URM.dot(self.W_sparse_CF)
-        self.URM_art = self.URM.dot(self.W_sparse_art)
-        self.URM_alb = self.URM.dot(self.W_sparse_alb)
-        self.URM_CF_user = self.W_sparse_CF_user.dot(self.URM)
+        #URM_p3_alpha = self.URM.dot(W_sparse_p3_alpha)
+        #URM_svd = W_sparse_svd_U.dot(W_sparse_svd_s_Vt)
+        URM_slim = self.URM.dot(W_sparse_slim)
+        URM_p3 = self.URM.dot(W_sparse_p3)
+        URM_CF = self.URM.dot(W_sparse_CF)
+        URM_art = self.URM.dot(W_sparse_art)
+        URM_alb = self.URM.dot(W_sparse_alb)
+        URM_CF_user = W_sparse_CF_user.dot(self.URM)
 
-        self.URM_final_hybrid = self.URM_CF *  1.25 + self.URM_art * 0.6 + self.URM_alb * 0.5 + self.URM_CF_user * 0.6 + self.URM_SLIM * 0.9
+        from sklearn.preprocessing import normalize
 
-        self.pen_mask = np.ones(self.URM_final_hybrid.shape[1], dtype=int)
+
+
+
+        self.URM_final_hybrid = URM_CF *  1.0 + URM_art * 0.05 + URM_alb * 0.1 + URM_CF_user * 0.85 + URM_p3 * 0.9  + URM_slim*0.85
+
+        #self.URM_final_hybrid = sps.csr_matrix(self.URM_final_hybrid)
+
+
+
+        self.URM_final_hybrid = self.penalize(self.URM_final_hybrid, [0.99, 0.98, 0.97, 0.96, 0.95, 0.94, 0.93, 0.92, 0.91, 0.90])
+
+
+
+
+    def penalize(self, scores_matrix, pen_array):
+
+        submission = {}
+
+
+
+        for i in range(len(pen_array)):
+
+            print("Iteration")
+            tracks_to_pen = []
+
+            target = reader.getTarget()
+
+            target = set(target)
+
+            for user_id in range(scores_matrix.shape[0]):
+
+                if user_id in target:
+
+                    if (i==0):
+
+                        submission[user_id] = []
+
+                    scores = scores_matrix[user_id]
+
+                    scores = scores.toarray().ravel()
+
+                    scores = self.filter_seen(user_id, scores)
+
+                    ranking = scores.argsort()[::-1]
+
+                    tracks_to_pen.append(ranking[0])
+
+                    submission[user_id].append(ranking[0])
+
+                    scores_matrix[user_id,ranking[0]] = -np.inf
+
+
+
+
+            tracks_to_pen = np.unique(np.array(tracks_to_pen))
+
+            scores_matrix.data[np.in1d(scores_matrix.indices, tracks_to_pen)] *= pen_array[i]
+
+        return submission
+
+
+
+
+
+
 
     def recommend(self, user_id, at=None, exclude_seen=True):
         # compute the scores using the dot product
 
-        scores = np.multiply(self.URM_final_hybrid[user_id].toarray().ravel(), self.pen_mask)
+        from sklearn.preprocessing import normalize
 
-        if exclude_seen:
-            scores = self.filter_seen(user_id, scores)
+        #scores = normalize(self.URM_CF[user_id,:].reshape(1,-1)) *  1.35 + normalize(self.URM_art[user_id,:].reshape(1,-1)) * 0.05 + normalize(self.URM_alb[user_id,:].reshape(1,-1)) * 0.35 + normalize(self.URM_CF_user[user_id,:].reshape(1,-1)) * 0.8 + normalize(self.URM_p3[user_id,:].reshape(1,-1)) * 0.85  + normalize(self.URM_svd[user_id,:].reshape(1,-1)) * 0.05 + normalize(self.URM_slim[user_id,:].reshape(1,-1))*0.1 + normalize(self.URM_p3_alpha[user_id,:].reshape(1,-1))*0.5
 
-        # rank items
-        ranking = scores.argsort()[::-1]
+        #scores = sps.csr_matrix(scores)
 
-        recs = ranking[:at]
+        scores = self.URM_final_hybrid[user_id]
+
+        # scores = scores.toarray().ravel()
+        #
+        # if exclude_seen:
+        #     scores = self.filter_seen(user_id, scores)
+        #
+        # # rank items
+        # ranking = scores.argsort()[::-1]
+        #
+        # recs = ranking[:at]
 
 
 
-        return recs
+        return scores
 
     def filter_seen(self, user_id, scores):
 
@@ -591,10 +633,11 @@ class ItemCBFKNNRecommender(object):
 
 
 reader = dataReader()
-recommender = ItemCBFKNNRecommender(reader.mat_complete, matTrack_Artist, matTrack_Album)
+recommender = ItemCBFKNNRecommender(reader.mat_Train, reader.get_ICM_Art(), reader.get_ICM_Alb())
 recommender.fit(shrink=22, topK=160)
-with open('Hybrid_with_SLIM.csv', 'w', newline='') as f:
-    thewriter = csv.writer(f)
-    thewriter.writerow(['playlist_id', 'track_ids'])
-    for playlist in targetPlaylistCol[0:]:
-        thewriter.writerow([playlist, ' '.join(map(str, recommender.recommend(playlist, at=10)))])
+evaluate_algorithm(reader.mat_Test, recommender, at=10)
+# with open('Hybrid_with_SLIMM.csv', 'w', newline='') as f:
+#     thewriter = csv.writer(f)
+#     thewriter.writerow(['playlist_id', 'track_ids'])
+#     for playlist in reader.getTarget():
+#         thewriter.writerow([playlist, ' '.join(map(str, recommender.recommend(playlist, at=10)))])

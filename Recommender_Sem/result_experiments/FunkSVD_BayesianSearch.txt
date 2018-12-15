@@ -5,3 +5,38 @@ BayesianSearch: Testing config: {'num_factors': 124.17190599390217, 'reg': 0.001
 BayesianSearch: Testing config: {'num_factors': 727.4168603716173, 'reg': 0.001, 'learning_rate': 0.01} - Exception only integer scalar arrays can be converted to a scalar index
 BayesianSearch: Testing config: {'num_factors': 126.56863420598071, 'reg': 0.001, 'learning_rate': 0.001} - Exception only integer scalar arrays can be converted to a scalar index
 BayesianSearch: Testing config: {'num_factors': 926.2159548636458, 'reg': 0.001, 'learning_rate': 0.01} - Exception only integer scalar arrays can be converted to a scalar index
+BayesianSearch: Testing config: {'num_factors': 587.891070760985, 'reg': 0.001, 'learning_rate': 0.01} - Exception only integer scalar arrays can be converted to a scalar index
+BayesianSearch: Testing config: {'num_factors': 456.3459014627328, 'reg': 0.001, 'learning_rate': 0.01} - Exception only integer scalar arrays can be converted to a scalar index
+BayesianSearch: Testing config: {'num_factors': 1100, 'reg': 0.0, 'learning_rate': 0.001} - Exception only integer scalar arrays can be converted to a scalar index
+BayesianSearch: Testing config: {'num_factors': 700, 'reg': 0.0, 'learning_rate': 0.001} - Exception only integer scalar arrays can be converted to a scalar index
+BayesianSearch: Testing config: {'num_factors': 1500, 'reg': 0.001, 'learning_rate': 0.01} - Exception only integer scalar arrays can be converted to a scalar index
+BayesianSearch: Testing config: {'num_factors': 1500, 'reg': 1e-06, 'learning_rate': 0.01} - Exception only integer scalar arrays can be converted to a scalar index
+BayesianSearch: Testing config: {'num_factors': 1100, 'reg': 0.001, 'learning_rate': 0.001} - Exception only integer scalar arrays can be converted to a scalar index
+BayesianSearch: Testing config: {'num_factors': 1900, 'reg': 1e-06, 'learning_rate': 0.001} - Exception only integer scalar arrays can be converted to a scalar index
+BayesianSearch: Testing config: {'num_factors': 700, 'reg': 0.001, 'learning_rate': 0.001} - Exception only integer scalar arrays can be converted to a scalar index
+BayesianSearch: Testing config: {'num_factors': 900, 'reg': 0.001, 'learning_rate': 0.01} - Exception only integer scalar arrays can be converted to a scalar index
+BayesianSearch: Testing config: {'num_factors': 700, 'reg': 0.001, 'learning_rate': 0.001} - Exception index (17459) out of range (>= 1)
+BayesianSearch: Testing config: {'num_factors': 100, 'reg': 1e-09, 'learning_rate': 0.001} - Exception index (17459) out of range (>= 1)
+BayesianSearch: Testing config: {'num_factors': 100, 'reg': 1e-06, 'learning_rate': 0.01} - Exception index (17459) out of range (>= 1)
+BayesianSearch: Testing config: {'num_factors': 500, 'reg': 1e-06, 'learning_rate': 0.01} - Exception index (17459) out of range (>= 1)
+BayesianSearch: Testing config: {'num_factors': 1900, 'reg': 1e-09, 'learning_rate': 0.001} - Exception index (17459) out of range (>= 1)
+BayesianSearch: Testing config: {'num_factors': 1700, 'reg': 0.0, 'learning_rate': 0.001} - Exception index (11102) out of range (>= 1)
+BayesianSearch: Testing config: {'num_factors': 500, 'reg': 1e-09, 'learning_rate': 0.01} - Exception index (11102) out of range (>= 1)
+BayesianSearch: Testing config: {'num_factors': 1500, 'reg': 1e-09, 'learning_rate': 0.01} - Exception index (11102) out of range (>= 1)
+BayesianSearch: Testing config: {'num_factors': 300, 'reg': 1e-06, 'learning_rate': 0.01} - Exception index (11102) out of range (>= 1)
+BayesianSearch: Testing config: {'num_factors': 500, 'reg': 0.0, 'learning_rate': 0.01} - Exception index (15076) out of range (>= 1)
+BayesianSearch: Testing config: {'num_factors': 1100, 'reg': 0.001, 'learning_rate': 0.001} - Exception index (15076) out of range (>= 1)
+BayesianSearch: Testing config: {'num_factors': 1500, 'reg': 1e-06, 'learning_rate': 0.001} - Exception index (15076) out of range (>= 1)
+BayesianSearch: Testing config: {'num_factors': 500, 'reg': 0.001, 'learning_rate': 0.01} - Exception index (18956) out of range (>= 1)
+BayesianSearch: Testing config: {'num_factors': 100, 'reg': 1e-09, 'learning_rate': 0.01} - Exception index (17459) out of range (>= 1)
+BayesianSearch: Testing config: {'num_factors': 1500, 'reg': 1e-06, 'learning_rate': 0.001} - Exception index (17459) out of range (>= 1)
+BayesianSearch: Testing config: {'num_factors': 300, 'reg': 0.0, 'learning_rate': 0.01} - Exception index (19858) out of range (>= 1)
+BayesianSearch: Testing config: {'num_factors': 700, 'reg': 0.0, 'learning_rate': 0.01} - Exception index (19858) out of range (>= 1)
+BayesianSearch: Testing config: {'num_factors': 900, 'reg': 1e-06, 'learning_rate': 0.01} - Exception index (19858) out of range (>= 1)
+BayesianSearch: Testing config: {'num_factors': 1500, 'reg': 1e-06, 'learning_rate': 0.001} - Exception index (19858) out of range (>= 1)
+BayesianSearch: Testing config: {'num_factors': 1700, 'reg': 0.0, 'learning_rate': 0.001} - Exception index (19858) out of range (>= 1)
+BayesianSearch: Testing config: {'num_factors': 700, 'reg': 0.0, 'learning_rate': 0.001} - Exception index 11595 is out of bounds for axis 0 with size 1
+BayesianSearch: Testing config: {'num_factors': 1500, 'reg': 1e-06, 'learning_rate': 0.01} - Exception index 11595 is out of bounds for axis 0 with size 1
+BayesianSearch: Testing config: {'num_factors': 1100, 'reg': 0.001, 'learning_rate': 0.001} - Exception index 11595 is out of bounds for axis 0 with size 1
+BayesianSearch: Testing config: {'num_factors': 300, 'reg': 1e-09, 'learning_rate': 0.001} - Exception index 11595 is out of bounds for axis 0 with size 1
+BayesianSearch: Testing config: {'num_factors': 700, 'reg': 1e-09, 'learning_rate': 0.01} - Exception index 11595 is out of bounds for axis 0 with size 1

@@ -24,14 +24,14 @@ class dataReader:
         targetPlaylist = pd.read_csv("/Users/samuelelanghi/Documents/GitHub/RecommenderSystem18-19/Recommender_Sem/data_raw/target_playlists.csv")
         train_seq = pd.read_csv("/Users/samuelelanghi/Documents/GitHub/RecommenderSystem18-19/Recommender_Sem/data_raw/train_sequential.csv")
 
-        targetPlaylistCol = targetPlaylist.playlist_id.tolist()
+        self.targetPlaylistCol = targetPlaylist.playlist_id.tolist()
 
         playlistColTuples_tot = list(train.apply(tuple, axis=1))
         playlistColTuples_seq = set(train_seq.apply(tuple, axis=1))
 
         playlistColTuples = list(filter(lambda x: x not in playlistColTuples_seq, playlistColTuples_tot))
 
-        playlistCol_target_notseq = list(filter(lambda x: x[0] in targetPlaylistCol, playlistColTuples))
+        playlistCol_target_notseq = list(filter(lambda x: x[0] in self.targetPlaylistCol, playlistColTuples))
 
 
 
@@ -143,6 +143,9 @@ class dataReader:
 
     def get_ICM_Alb(self):
         return self.ICM_Alb
+
+    def get_target_list(self):
+        return self.targetPlaylistCol
 
     def train_test_holdout(self, URM_all, URM_all_seq, URM_all_seq_rank, nonempty_seq, train_perc=0.8):
         numInteractions = URM_all.nnz

@@ -153,3 +153,4 @@ class RP3betaRecommender(SimilarityMatrixRecommender, Recommender):
             self.W_sparse = similarityMatrixTopK(self.W, forceSparseOutput = True, k=self.topK)
             self.sparse_weights = True
 
+        return self.W_sparse

@@ -246,7 +246,7 @@ class MultiThreadSLIM_ElasticNet(SLIMElasticNetRecommender, SimilarityMatrixReco
         self.l1_penalty = l1_penalty
         self.l2_penalty = l2_penalty
         self.positive_only = positive_only
-        self.l1_ratio = self.l1_penalty / (self.l1_penalty + self.l2_penalty)
+        self.l1_ratio = self.l1_penalty
         self.topK = topK
 
         self.workers = workers

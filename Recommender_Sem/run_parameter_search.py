@@ -11,7 +11,7 @@ from Base.NonPersonalizedRecommender import TopPop, Random
 from KNN.UserKNNCFRecommender import UserKNNCFRecommender
 from KNN.ItemKNNCFRecommender import ItemKNNCFRecommender
 from SLIM_BPR.Cython.SLIM_BPR_Cython import SLIM_BPR_Cython
-from SLIM_ElasticNet.SLIMElasticNetRecommender import SLIMElasticNetRecommender
+from SLIM_ElasticNet.SLIMElasticNetRecommender import SLIMElasticNetRecommender, MultiThreadSLIM_ElasticNet
 from GraphBased.P3alphaRecommender import P3alphaRecommender
 from GraphBased.RP3betaRecommender import RP3betaRecommender
 
@@ -36,8 +36,8 @@ from MatrixFactorization.MatrixFactorization_RMSE import FunkSVD
 def run_KNNCFRecommender_on_similarity_type(similarity_type, parameterSearch, URM_train, n_cases, output_root_path,
                                             metric_to_optimize):
     hyperparamethers_range_dictionary = {}
-    hyperparamethers_range_dictionary["topK"] = [160]
-    hyperparamethers_range_dictionary["shrink"] = [22]
+    hyperparamethers_range_dictionary["topK"] = [x for x in range(100, 1500, 100)]
+    hyperparamethers_range_dictionary["shrink"] = [x for x in range(0, 200, 2)]
     hyperparamethers_range_dictionary["similarity"] = [similarity_type]
     hyperparamethers_range_dictionary["normalize"] = [True]
 
@@ -267,9 +267,11 @@ def runParameterSearch_Collaborative(recommender_class, URM_train, ICM_1, ICM_2,
             hyperparamethers_range_dictionary["w_usercf"] = [x * 0.05 for x in range(0, 20)]
             hyperparamethers_range_dictionary["w_cbart"] = [x * 0.05 for x in range(0, 20)]
             hyperparamethers_range_dictionary["w_cbalb"] = [x * 0.05 for x in range(0, 20)]
-            hyperparamethers_range_dictionary["w_slim"] = [x * 0.05 for x in range(0, 20)]
+            hyperparamethers_range_dictionary["w_slim"] = [(x * 0.05) for x in range(0, 20)]
             hyperparamethers_range_dictionary["w_svd"] = [x * 0.05 for x in range(0, 20)]
             hyperparamethers_range_dictionary["w_rp3"] = [x * 0.05 for x in range(0, 20)]
+
+            hyperparamethers_range_dictionary["w_p3_alpha"] = [x * 0.05 for x in range(0, 20)]
 
             item = ItemKNNCFRecommender(URM_train)
 
@@ -277,11 +279,17 @@ def runParameterSearch_Collaborative(recommender_class, URM_train, ICM_1, ICM_2,
 
             SLIM = SLIMElasticNetRecommender(URM_train=URM_train)
 
-            item.fit(topK=800, shrink=10, similarity='cosine', normalize=True)
+            p3_alpha = P3alphaRecommender(URM_train=URM_train)
+
+            p3_alpha.fit(topK=200, alpha=0.7312418567825512, normalize_similarity=True)
+
+
+
+            item.fit(topK=800, shrink=22, similarity='cosine', normalize=True)
 
             user.fit(topK=400, shrink=0, similarity='cosine', normalize=True)
 
-            SLIM.fit(l1_penalty=1e-05, l2_penalty=0, positive_only=True, topK=150, alpha=0.00415637376180466)
+            SLIM.fit(l1_penalty=1.95e-06, l2_penalty=0, positive_only=True, topK=1500, alpha=0.00165)
 
             recommenderDictionary = {DictionaryKeys.CONSTRUCTOR_POSITIONAL_ARGS: [URM_train],
                                      DictionaryKeys.CONSTRUCTOR_KEYWORD_ARGS: {},
@@ -291,7 +299,7 @@ def runParameterSearch_Collaborative(recommender_class, URM_train, ICM_1, ICM_2,
                                                                        "item": item,
                                                                        "user": user,
                                                                        "SLIM": SLIM,
-
+                                                                       "p3_alpha" : p3_alpha,
 
                                                                        },
                                      DictionaryKeys.FIT_RANGE_KEYWORD_ARGS: hyperparamethers_range_dictionary}
@@ -340,7 +348,7 @@ def runParameterSearch_Collaborative(recommender_class, URM_train, ICM_1, ICM_2,
             hyperparamethers_range_dictionary = {}
 
             # hyperparamethers_range_dictionary["epochs"] = [1, 5, 10, 20, 30, 50, 70, 90, 110]
-            hyperparamethers_range_dictionary["num_factors"] = range(100, 1000, 20)
+            hyperparamethers_range_dictionary["num_factors"] = [x for x in range(100, 2000, 200)]
             hyperparamethers_range_dictionary["reg"] = [0.0, 1e-03, 1e-06, 1e-09]
             hyperparamethers_range_dictionary["learning_rate"] = [1e-02, 1e-03]
 
@@ -352,16 +360,16 @@ def runParameterSearch_Collaborative(recommender_class, URM_train, ICM_1, ICM_2,
 
         ##########################################################################################################
 
-        if recommender_class is MatrixFactorization_AsySVD_Cython:
+        if recommender_class is MatrixFactorization_BPR_Cython:
             hyperparamethers_range_dictionary = {}
-            hyperparamethers_range_dictionary["sgd_mode"] = ["adagrad", "adam"]
+            hyperparamethers_range_dictionary["sgd_mode"] = ["adagrad"]
             # hyperparamethers_range_dictionary["epochs"] = [1, 5, 10, 20, 30, 50, 70, 90, 110]
-            hyperparamethers_range_dictionary["num_factors"] = range(100, 500, 10)
-            hyperparamethers_range_dictionary["batch_size"] = [100, 200, 300, 400]
-            hyperparamethers_range_dictionary["positive_reg"] = [0.0, 1e-3, 1e-6, 1e-9]
-            hyperparamethers_range_dictionary["negative_reg"] = [0.0, 1e-3, 1e-6, 1e-9]
-            hyperparamethers_range_dictionary["learning_rate"] = [1e-2, 1e-3, 1e-4, 1e-5]
-            hyperparamethers_range_dictionary["user_reg"] = [1e-3, 1e-4, 1e-5, 1e-6]
+            hyperparamethers_range_dictionary["num_factors"] = [400, 500, 600, 700, 1000, 1500, 2000]
+            hyperparamethers_range_dictionary["batch_size"] = [1000, 1200, 1500, 2000, 2500, 3000, 4000, 5000, 6000]
+            hyperparamethers_range_dictionary["positive_reg"] = [x*0.00000005 for x in range(0, 40)]
+            hyperparamethers_range_dictionary["negative_reg"] = [x*0.00000005 for x in range(0, 40)]
+            hyperparamethers_range_dictionary["learning_rate"] = [1e-2, 1e-3]
+            hyperparamethers_range_dictionary["user_reg"] = [x*0.00000005 for x in range(0, 40)]
 
 
             recommenderDictionary = {DictionaryKeys.CONSTRUCTOR_POSITIONAL_ARGS: [URM_train],
@@ -413,10 +421,10 @@ def runParameterSearch_Collaborative(recommender_class, URM_train, ICM_1, ICM_2,
 
         if recommender_class is SLIMElasticNetRecommender:
             hyperparamethers_range_dictionary = {}
-            hyperparamethers_range_dictionary["topK"] = [3300, 4300, 5300, 6300, 7300]
-            hyperparamethers_range_dictionary["l1_penalty"] = [1e-5,1e-6, 1e-4, 1e-3]
+            hyperparamethers_range_dictionary["topK"] = [900, 1000, 1100, 1200, 1300, 1400, 1500, 1700, 2000, 2200, 2500, 3000]
+            hyperparamethers_range_dictionary["l1_penalty"] = [x*0.00000005 for x in range(0, 40)]
             hyperparamethers_range_dictionary["l2_penalty"] = [1e-4]
-            hyperparamethers_range_dictionary["alpha"] = range(0,1)
+            hyperparamethers_range_dictionary["alpha"] = [x*0.00005 for x in range(0, 60)]
 
             recommenderDictionary = {DictionaryKeys.CONSTRUCTOR_POSITIONAL_ARGS: [URM_train],
                                      DictionaryKeys.CONSTRUCTOR_KEYWORD_ARGS: {},
@@ -481,7 +489,7 @@ def read_data_split_and_search():
         os.makedirs(output_root_path)
 
     collaborative_algorithm_list = [
-        HybridRecommender
+         HybridRecommender
 
     ]
 

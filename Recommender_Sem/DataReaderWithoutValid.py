@@ -25,6 +25,7 @@ class dataReader:
         train_seq = pd.read_csv("/Users/samuelelanghi/Documents/GitHub/RecommenderSystem18-19/Recommender_Sem/data_raw/train_sequential.csv")
 
         targetPlaylistCol = targetPlaylist.playlist_id.tolist()
+        self.targetPlaylist = targetPlaylistCol
 
         playlistColTuples_tot = list(train.apply(tuple, axis=1))
         playlistColTuples_seq = set(train_seq.apply(tuple, axis=1))
@@ -127,6 +128,9 @@ class dataReader:
         self.mat_Test = URM_test+URM_test_seq
         self.mat_Valid = sps.csr_matrix(mat.shape, dtype=int)
 
+
+    def getTarget(self):
+        return self.targetPlaylist
 
     def get_URM_complete(self):
         return self.mat_complete

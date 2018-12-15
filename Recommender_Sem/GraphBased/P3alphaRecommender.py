@@ -142,3 +142,5 @@ class P3alphaRecommender(SimilarityMatrixRecommender, Recommender):
         if self.topK != False:
             self.W_sparse = similarityMatrixTopK(self.W_sparse, forceSparseOutput = True, k=self.topK)
             self.sparse_weights = True
+
+        return self.W_sparse

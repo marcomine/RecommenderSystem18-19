@@ -17,7 +17,7 @@ from GraphBased.P3alphaRecommender import P3alphaRecommender
 #from DataReader import dataReader
 from DataReaderWithoutValid import dataReader
 
-from HybridRecommender2 import HybridRecommender
+from HybridRecommender import HybridRecommender
 
 import traceback, os
 
@@ -69,12 +69,12 @@ if __name__ == '__main__':
 
             SLIM = SLIMElasticNetRecommender(URM_train=URM_train)
 
-            item.fit(topK=800, shrink=10, similarity='cosine', normalize=True)
+            itemSim = item.fit(topK=800, shrink=10, similarity='cosine', normalize=True)
 
             user.fit(topK=400, shrink=0, similarity='cosine', normalize=True)
 
-            SLIM.fit(l1_penalty=1e-05, l2_penalty=0, positive_only=True, topK=150, alpha=0.00415637376180466)
-            recommender.fit(ICM_Art, ICM_Alb, item=item, user=user, SLIM=SLIM, w_itemcf=1.9, w_usercf=0.25, w_cbart=0.75, w_cbalb=0.95, w_slim=0.9, w_svd=0.85, w_rp3=0.95)
+            slimSim = SLIM.fit(l1_penalty=1e-05, l2_penalty=0, positive_only=True, topK=150, alpha=0.00415637376180466)
+            recommender.fit(ICM_Art, ICM_Alb, item=itemSim, user=user, SLIM=slimSim, w_itemcf=1., w_usercf=0.95, w_cbart=0.1, w_cbalb=0.15, w_slim=0.85, w_svd=0.0, w_rp3=0.8)
 
 
             results_run, results_run_string = evaluator.evaluateRecommender(recommender)

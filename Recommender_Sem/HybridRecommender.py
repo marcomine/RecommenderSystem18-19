@@ -83,7 +83,7 @@ class HybridRecommender(SimilarityMatrixRecommender, Recommender):
         #     URMidf[i] = np.multiply(self.URM_train[i], IDF_i)
         #
         # self.URM_train = URMidf.tocsr()
-        self.W_sparse = self.item * self.w_itemcf +  self.simAlb * self.w_cbalb + self.simArt * self.w_cbart #+ self.SLIM * self.w_slim
+        self.W_sparse = self.item * self.w_itemcf +  self.simAlb * self.w_cbalb + self.simArt * self.w_cbart + self.SLIM * self.w_slim
 
 
 
