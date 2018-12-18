@@ -458,14 +458,16 @@ class ItemCBFKNNRecommender(object):
         self.URM = URM
         self.ICM_art = ICM_art
         self.ICM_Alb = ICM_Alb
+        self.penalized = False
+
         # self.ICM_Dur = ICM_Dur
 
 
     def fit(self, topK=160, shrink=22, normalize=True):
 
-        self.svd = PureSVDRecommender(URM_train=self.URM)
+        #self.svd = PureSVDRecommender(URM_train=self.URM)
 
-        W_sparse_svd_U, W_sparse_svd_s_Vt = self.svd.fit(490)
+        #W_sparse_svd_U, W_sparse_svd_s_Vt = self.svd.fit(490)
 
         #p3_alpha = P3alphaRecommender(URM_train=self.URM)
 
@@ -475,9 +477,9 @@ class ItemCBFKNNRecommender(object):
 
         W_sparse_p3 = self.p3.fit(alpha=0.8729488414975284, beta= 0.2541372492523202, min_rating=0, topK=150, implicit=True, normalize_similarity=True)
 
-        SLIM = SLIMElasticNetRecommender(URM_train=self.URM)
+        #SLIM = SLIMElasticNetRecommender(URM_train=self.URM)
 
-        W_sparse_slim = SLIM.fit(l1_penalty=1.95e-06, l2_penalty=0, positive_only=True, topK=1500, alpha=0.00165)
+        #W_sparse_slim = SLIM.fit(l1_penalty=1.95e-06, l2_penalty=0, positive_only=True, topK=1500, alpha=0.00165)
         #     #SLIM.fit(l1_penalty=1e-05, l2_penalty=0, positive_only=True, topK=150, alpha=0.00415637376180466)
 
         similarity_object_CF = Compute_Similarity_Python(self.URM, shrink=10,
@@ -520,11 +522,15 @@ class ItemCBFKNNRecommender(object):
 
         #URM_p3_alpha = self.URM.dot(W_sparse_p3_alpha)
         #URM_svd = W_sparse_svd_U.dot(W_sparse_svd_s_Vt)
-        URM_slim = self.URM.dot(W_sparse_slim)
+
+        item_sim = W_sparse_CF*1.05 + W_sparse_art*0.45 + W_sparse_alb*0.15
+
+
+        #URM_slim = self.URM.dot(W_sparse_slim)
         URM_p3 = self.URM.dot(W_sparse_p3)
-        URM_CF = self.URM.dot(W_sparse_CF)
-        URM_art = self.URM.dot(W_sparse_art)
-        URM_alb = self.URM.dot(W_sparse_alb)
+        URM_CF = self.URM.dot(item_sim)
+        # URM_art = self.URM.dot(W_sparse_art)
+        # URM_alb = self.URM.dot(W_sparse_alb)
         URM_CF_user = W_sparse_CF_user.dot(self.URM)
 
         from sklearn.preprocessing import normalize
@@ -532,13 +538,13 @@ class ItemCBFKNNRecommender(object):
 
 
 
-        self.URM_final_hybrid = URM_CF *  1.0 + URM_art * 0.05 + URM_alb * 0.1 + URM_CF_user * 0.85 + URM_p3 * 0.9  + URM_slim*0.85
+        self.URM_final_hybrid = URM_CF *  1.05 + URM_CF_user * 0.75 + URM_p3 * 0.95  #+ URM_slim*0.5
 
-        #self.URM_final_hybrid = sps.csr_matrix(self.URM_final_hybrid)
+        #aqself.URM_final_hybrid = sps.csr_matrix(self.URM_final_hybrid)
 
 
 
-        self.URM_final_hybrid = self.penalize(self.URM_final_hybrid, [0.99, 0.98, 0.97, 0.96, 0.95, 0.94, 0.93, 0.92, 0.91, 0.90])
+        #self.URM_final_hybrid = self.penalize(self.URM_final_hybrid, [0.98, 0.96, 0.94, 0.92, 0.90, 0.88, 0.86, 0.84])
 
 
 
@@ -549,7 +555,7 @@ class ItemCBFKNNRecommender(object):
 
 
 
-        for i in range(len(pen_array)):
+        for i in range(10):
 
             print("Iteration")
             tracks_to_pen = []
@@ -582,10 +588,10 @@ class ItemCBFKNNRecommender(object):
 
 
 
+            if(i<7):
+                tracks_to_pen = np.unique(np.array(tracks_to_pen))
 
-            tracks_to_pen = np.unique(np.array(tracks_to_pen))
-
-            scores_matrix.data[np.in1d(scores_matrix.indices, tracks_to_pen)] *= pen_array[i]
+                scores_matrix.data[np.in1d(scores_matrix.indices, tracks_to_pen)] *= pen_array[i]
 
         return submission
 
@@ -604,21 +610,24 @@ class ItemCBFKNNRecommender(object):
 
         #scores = sps.csr_matrix(scores)
 
+
+
+
         scores = self.URM_final_hybrid[user_id]
 
-        # scores = scores.toarray().ravel()
-        #
-        # if exclude_seen:
-        #     scores = self.filter_seen(user_id, scores)
-        #
-        # # rank items
-        # ranking = scores.argsort()[::-1]
-        #
-        # recs = ranking[:at]
+        scores = scores.toarray().ravel()
+
+        if exclude_seen:
+            scores = self.filter_seen(user_id, scores)
+
+        # rank items
+        ranking = scores.argsort()[::-1]
+
+        recs = ranking[:at]
 
 
 
-        return scores
+        return recs
 
     def filter_seen(self, user_id, scores):
 

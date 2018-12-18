@@ -33,37 +33,43 @@ class HybridRecommender(Recommender):
 
         super(HybridRecommender, self).__init__()
 
-        self.URM_train=URM_train
+        self.URM_train = URM_train
         self.URM_train = check_matrix(URM_train, 'csr')
+        self.penalized = False
 
 
 
-    def fit(self, ICM_Art=None, ICM_Alb=None, item=None, user=None, SLIM=None , p3_alpha=None, w_itemcf=1.1, w_usercf=0.6, w_cbart=0.3, w_cbalb=0.6, w_slim=0.4, w_svd=0.6, w_rp3=1.1, w_p3_alpha=1.1):
+    def fit(self, ICM_Art=None, ICM_Alb=None, item=None, user=None, SLIM=None , reader=None, w_itemcf=1.1, w_usercf=0.6, w_cbart=0.3, w_cbalb=0.6, w_slim=0.4, w_rp3=1.1):
 
-        self.item = item
 
-        self.user = user
 
-        self.SLIM = SLIM
 
-        self.p3_alpha = p3_alpha
+
+        #self.SLIM = SLIM
+
+        self.reader = reader
+
+        #self.p3_alpha = p3_alpha
 
 
         self.CBArt = ItemKNNCBFRecommender(ICM=ICM_Art, URM_train=self.URM_train)
 
         self.CBAlb = ItemKNNCBFRecommender(ICM=ICM_Alb, URM_train=self.URM_train)
 
-        self.SVD = PureSVDRecommender(URM_train=self.URM_train)
+        #self.SVD = PureSVDRecommender(URM_train=self.URM_train)
 
         self.p3 = RP3betaRecommender(URM_train=self.URM_train)
 
-        self.p3.fit(alpha=0.8729488414975284, beta= 0.2541372492523202, min_rating=0, topK=150, implicit=True, normalize_similarity=True)
+        simURM_rp3 = self.p3.fit(alpha=0.8729488414975284, beta= 0.2541372492523202, min_rating=0, topK=150, implicit=True, normalize_similarity=True)
+        simURM_rp3 = self.URM_train.dot(simURM_rp3)
 
-        self.SVD.fit(num_factors=490)
+        #self.SVD.fit(num_factors=490)
 
-        self.simAlb = self.CBAlb.fit(topK=500, shrink=0, similarity='cosine', normalize=True, feature_weighting='none')
+        simAlb = self.CBAlb.fit(topK=500, shrink=0, similarity='cosine', normalize=True, feature_weighting='none')
+        simAlb = self.URM_train.dot(simAlb)
 
-        self.simArt = self.CBArt.fit(topK=800, shrink=1000, similarity='cosine', normalize=True, feature_weighting='none')
+        simArt = self.CBArt.fit(topK=800, shrink=1000, similarity='cosine', normalize=True, feature_weighting='none')
+        simArt = self.URM_train.dot(simArt)
 
         self.w_itemcf = w_itemcf
 
@@ -75,11 +81,11 @@ class HybridRecommender(Recommender):
 
         self.w_slim = w_slim
 
-        self.w_svd = w_svd
+        #self.w_svd = w_svd
 
         self.w_p3 = w_rp3
 
-        self.w_p3_alpha = w_p3_alpha
+        #self.w_p3_alpha = w_p3_alpha
 
         # nItems = self.URM_train.shape[1]
         # URMidf = sps.lil_matrix((self.URM_train.shape[0], self.URM_train.shape[1]))
@@ -93,12 +99,85 @@ class HybridRecommender(Recommender):
 
 
 
+        self.URM_final = item*self.w_itemcf + user*self.w_usercf  + simURM_rp3*self.w_p3 + simArt*self.w_cbart+simAlb*self.w_cbalb#+ self.SLIM*self.w_slim
 
+        self.URM_final = check_matrix(self.URM_final, 'csr')
+
+
+
+
+    def penalize(self, scores_matrix, pen_array):
+
+        submission = {}
+
+
+
+        for i in range(10):
+
+            print("Iteration")
+            tracks_to_pen = []
+
+            target = self.reader.get_target_list()
+
+            target = set(target)
+            print("starting iterate on users")
+
+            for user_id in range(self.URM_train.shape[0]):
+
+                if user_id in target:
+
+                    if (i==0):
+
+                        submission[user_id] = []
+
+                    print("slicing")
+
+                    scores = scores_matrix[user_id]
+
+                    scores = scores.toarray().ravel()
+
+                    print("filtering")
+
+                    scores = self.filter_seen(user_id, scores)
+
+                    ranking = scores.argsort()[::-1]
+
+                    if(i<4):
+
+                        tracks_to_pen.append(ranking[0])
+
+                    submission[user_id].append(ranking[0])
+
+                    scores_matrix[user_id,ranking[0]] = -np.inf
+
+
+            print("start penalizing")
+            if(i<4):
+                tracks_to_pen = np.unique(np.array(tracks_to_pen))
+
+                scores_matrix.data[np.in1d(scores_matrix.indices, tracks_to_pen)] *= pen_array[i]
+
+        return submission
+
+
+    def filter_seen(self, user_id, scores):
+
+        start_pos = self.URM_train.indptr[user_id]
+        end_pos = self.URM_train.indptr[user_id + 1]
+
+        user_profile = self.URM_train.indices[start_pos:end_pos]
+
+        scores[user_profile] = -np.inf
+
+        return scores
 
     def compute_item_score(self, user_id):
 
-        return normalize(self.item.compute_item_score(user_id)) * self.w_itemcf + normalize(self.user.compute_item_score(user_id))*self.w_usercf + normalize(self.CBAlb.compute_item_score(user_id)) * self.w_cbalb + normalize(self.p3.compute_item_score(user_id))*self.w_p3 + normalize(self.SLIM.compute_item_score(user_id)) * self.w_slim + normalize(self.p3_alpha.compute_item_score(user_id))*self.w_p3_alpha + self.w_svd*normalize(self.SVD.compute_item_score(user_id))
+        if (self.penalized == False):
+            self.URM_final = self.penalize(self.URM_final, [0.95, 0.90, 0.85, 0.80])
+            self.penalized = True
 
+        return self.URM_final[user_id]
 
 
     def saveModel(self, folder_path, file_name = None):

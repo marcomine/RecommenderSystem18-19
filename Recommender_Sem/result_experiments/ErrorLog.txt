@@ -11,3 +11,6 @@ On recommender <class 'SLIM_ElasticNet.SLIMElasticNetRecommender.MultiThreadSLIM
 On recommender <class 'MatrixFactorization.MatrixFactorization_RMSE.FunkSVD'> Exception Input contains NaN, infinity or a value too large for dtype('float64').
 On recommender <class 'MatrixFactorization.MatrixFactorization_RMSE.FunkSVD'> Exception Input contains NaN, infinity or a value too large for dtype('float64').
 On recommender <class 'MatrixFactorization.MatrixFactorization_RMSE.FunkSVD'> Exception Input contains NaN, infinity or a value too large for dtype('float64').
+On recommender <class 'HybridRecommender_with_penalization.HybridRecommender'> Exception 'NoneType' object has no attribute 'dot'
+On recommender <class 'HybridRecommender_with_penalization.HybridRecommender'> Exception name 'simURM_SLIM' is not defined
+On recommender <class 'HybridRecommender2.HybridRecommender'> Exception Input contains NaN, infinity or a value too large for dtype('float64').

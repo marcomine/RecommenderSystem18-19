@@ -33,12 +33,12 @@ class HybridRecommender(Recommender):
 
         super(HybridRecommender, self).__init__()
 
-        self.URM_train=URM_train
+        self.URM_train = URM_train
         self.URM_train = check_matrix(URM_train, 'csr')
 
 
 
-    def fit(self, ICM_Art=None, ICM_Alb=None, item=None, user=None, SLIM=None , p3_alpha=None, w_itemcf=1.1, w_usercf=0.6, w_cbart=0.3, w_cbalb=0.6, w_slim=0.4, w_svd=0.6, w_rp3=1.1, w_p3_alpha=1.1):
+    def fit(self, ICM_Art=None, ICM_Alb=None, item=None, user=None, SLIM=None , p3_alpha=None, w_itemcf=1.1, w_usercf=0.6, w_cbart=0.3, w_cbalb=0.6, w_slim=1.0, w_svd=0.6, w_rp3=1.1, w_p3_alpha=1.1, cb_weight=1.0, cf_weight=1.0, graph_weight=1.0, hybrid_weight=1.0, final_weight=1.0):
 
         self.item = item
 
@@ -47,6 +47,8 @@ class HybridRecommender(Recommender):
         self.SLIM = SLIM
 
         self.p3_alpha = p3_alpha
+
+        self.final_weight = final_weight
 
 
         self.CBArt = ItemKNNCBFRecommender(ICM=ICM_Art, URM_train=self.URM_train)
@@ -57,13 +59,13 @@ class HybridRecommender(Recommender):
 
         self.p3 = RP3betaRecommender(URM_train=self.URM_train)
 
-        self.p3.fit(alpha=0.8729488414975284, beta= 0.2541372492523202, min_rating=0, topK=150, implicit=True, normalize_similarity=True)
+        simRP3 = self.p3.fit(alpha=0.8729488414975284, beta= 0.2541372492523202, min_rating=0, topK=150, implicit=True, normalize_similarity=True)
 
         self.SVD.fit(num_factors=490)
 
-        self.simAlb = self.CBAlb.fit(topK=500, shrink=0, similarity='cosine', normalize=True, feature_weighting='none')
+        simAlb = self.CBAlb.fit(topK=500, shrink=0, similarity='cosine', normalize=True, feature_weighting='none')
 
-        self.simArt = self.CBArt.fit(topK=800, shrink=1000, similarity='cosine', normalize=True, feature_weighting='none')
+        simArt = self.CBArt.fit(topK=800, shrink=1000, similarity='cosine', normalize=True, feature_weighting='none')
 
         self.w_itemcf = w_itemcf
 
@@ -90,6 +92,26 @@ class HybridRecommender(Recommender):
         #
         # self.URM_train = URMidf.tocsr()
 
+        simCB = simAlb * self.w_cbalb + simArt * self.w_cbart + self.item * self.w_itemcf
+        simCB = self.URM_train.dot(simCB)
+
+        simGraph = simRP3*self.w_p3 + p3_alpha*self.p3_alpha
+        simGraph = self.URM_train.dot(simGraph)
+
+        simCF = self.SLIM * self.w_slim
+        simCF = self.URM_train.dot(simCF)
+
+        self.final_hybrid = simCB * cb_weight + simGraph*graph_weight + simCF * cf_weight
+        print(type(self.final_hybrid))
+
+        #simUserCF = user.dot(self.URM_train)
+
+
+        print(type(self.final_hybrid))
+
+
+
+
 
 
 
@@ -97,8 +119,11 @@ class HybridRecommender(Recommender):
 
     def compute_item_score(self, user_id):
 
-        return normalize(self.item.compute_item_score(user_id)) * self.w_itemcf + normalize(self.user.compute_item_score(user_id))*self.w_usercf + normalize(self.CBAlb.compute_item_score(user_id)) * self.w_cbalb + normalize(self.p3.compute_item_score(user_id))*self.w_p3 + normalize(self.SLIM.compute_item_score(user_id)) * self.w_slim + normalize(self.p3_alpha.compute_item_score(user_id))*self.w_p3_alpha + self.w_svd*normalize(self.SVD.compute_item_score(user_id))
+        recs = self.final_hybrid[user_id] * self.final_weight + sps.csr_matrix(self.SVD.compute_item_score(user_id)) * self.w_svd + sps.csr_matrix(self.user.compute_item_score(user_id)) * self.w_usercf
 
+        print(type(recs))
+
+        return recs.toarray()
 
 
     def saveModel(self, folder_path, file_name = None):

@@ -46,3 +46,5 @@ class UserKNNCFRecommender(SimilarityMatrixRecommender, Recommender):
             self.W = similarity.compute_similarity()
             self.W = self.W.toarray()
 
+        return self.W_sparse
+

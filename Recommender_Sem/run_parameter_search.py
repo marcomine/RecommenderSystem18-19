@@ -135,7 +135,7 @@ def runParameterSearch_Content(recommender_class, URM_train, ICM_object, ICM_nam
 def runParameterSearch_Collaborative(recommender_class, URM_train, ICM_1, ICM_2, metric_to_optimize="PRECISION",
                                      evaluator_validation=None, evaluator_test=None,
                                      evaluator_validation_earlystopping=None,
-                                     output_root_path="result_experiments/", parallelizeKNN=True, n_cases=100):
+                                     output_root_path="result_experiments/", parallelizeKNN=True, n_cases=100, reader=None):
     from ParameterTuning.AbstractClassSearch import DictionaryKeys
 
     # If directory does not exist, create
@@ -263,15 +263,21 @@ def runParameterSearch_Collaborative(recommender_class, URM_train, ICM_1, ICM_2,
 
 
             hyperparamethers_range_dictionary = {}
-            hyperparamethers_range_dictionary["w_itemcf"] = [(x * 0.05)+1 for x in range(0, 20)]
-            hyperparamethers_range_dictionary["w_usercf"] = [x * 0.05 for x in range(0, 20)]
-            hyperparamethers_range_dictionary["w_cbart"] = [x * 0.05 for x in range(0, 20)]
-            hyperparamethers_range_dictionary["w_cbalb"] = [x * 0.05 for x in range(0, 20)]
-            hyperparamethers_range_dictionary["w_slim"] = [(x * 0.05) for x in range(0, 20)]
-            hyperparamethers_range_dictionary["w_svd"] = [x * 0.05 for x in range(0, 20)]
-            hyperparamethers_range_dictionary["w_rp3"] = [x * 0.05 for x in range(0, 20)]
+            hyperparamethers_range_dictionary["w_itemcf"] = [(x * 5)+100 for x in range(0, 20)]
+            hyperparamethers_range_dictionary["w_usercf"] = [x * 5 for x in range(0, 20)]
+            hyperparamethers_range_dictionary["w_cbart"] = [x * 5 for x in range(0, 20)]
+            hyperparamethers_range_dictionary["w_cbalb"] = [x * 5 for x in range(0, 20)]
+            #hyperparamethers_range_dictionary["w_slim"] = [(x * 5) for x in range(0, 20)]
+            hyperparamethers_range_dictionary["w_svd"] = [x * 5 for x in range(0, 20)]
+            hyperparamethers_range_dictionary["w_rp3"] = [x * 5 for x in range(0, 20)]
+            hyperparamethers_range_dictionary["w_p3_alpha"] = [x * 5 for x in range(0, 20)]
+            hyperparamethers_range_dictionary["cb_weight"] = [x * 5 for x in range(0, 20)]
+            hyperparamethers_range_dictionary["cf_weight"] = [x * 5 for x in range(0, 20)]
+            hyperparamethers_range_dictionary["graph_weight"] = [x * 5 for x in range(0, 20)]
+            hyperparamethers_range_dictionary["hybrid_weight"] = [x * 5 for x in range(0, 20)]
+            hyperparamethers_range_dictionary["final_weight"] = [x * 5 for x in range(0, 20)]
 
-            hyperparamethers_range_dictionary["w_p3_alpha"] = [x * 0.05 for x in range(0, 20)]
+            #hyperparamethers_range_dictionary["w_p3_alpha"] = [x * 0.05 for x in range(0, 20)]
 
             item = ItemKNNCFRecommender(URM_train)
 
@@ -281,25 +287,33 @@ def runParameterSearch_Collaborative(recommender_class, URM_train, ICM_1, ICM_2,
 
             p3_alpha = P3alphaRecommender(URM_train=URM_train)
 
-            p3_alpha.fit(topK=200, alpha=0.7312418567825512, normalize_similarity=True)
+            simURM_alpha = p3_alpha.fit(topK=200, alpha=0.7312418567825512, normalize_similarity=True)
 
 
 
-            item.fit(topK=800, shrink=22, similarity='cosine', normalize=True)
+            simURM_ICF = item.fit(topK=800, shrink=22, similarity='cosine', normalize=True)
+            #simURM_ICF = URM_train.dot(simURM_ICF)
 
-            user.fit(topK=400, shrink=0, similarity='cosine', normalize=True)
+            simURM_UCF = user.fit(topK=400, shrink=0, similarity='cosine', normalize=True)
+            #simURM_UCF = simURM_UCF.dot(URM_train)
 
-            SLIM.fit(l1_penalty=1.95e-06, l2_penalty=0, positive_only=True, topK=1500, alpha=0.00165)
+            simURM_SLIM = SLIM.fit(l1_penalty=1.95e-06, l2_penalty=0, positive_only=True, topK=1500, alpha=0.00165)
+            #simURM_SLIM = URM_train.dot(simURM_SLIM)
+
+            #"SLIM": simURM_SLIM,
 
             recommenderDictionary = {DictionaryKeys.CONSTRUCTOR_POSITIONAL_ARGS: [URM_train],
                                      DictionaryKeys.CONSTRUCTOR_KEYWORD_ARGS: {},
                                      DictionaryKeys.FIT_POSITIONAL_ARGS: dict(),
                                      DictionaryKeys.FIT_KEYWORD_ARGS: {"ICM_Art": ICM_1,
                                                                        "ICM_Alb": ICM_2,
-                                                                       "item": item,
+                                                                       "item": simURM_ICF,
                                                                        "user": user,
-                                                                       "SLIM": SLIM,
-                                                                       "p3_alpha" : p3_alpha,
+                                                                       "SLIM": simURM_SLIM,
+
+                                                                       "p3_alpha": simURM_alpha,
+
+
 
                                                                        },
                                      DictionaryKeys.FIT_RANGE_KEYWORD_ARGS: hyperparamethers_range_dictionary}
@@ -510,7 +524,8 @@ def read_data_split_and_search():
                                                        evaluator_validation_earlystopping=evaluator_validation_earlystopping,
                                                        evaluator_validation=evaluator_validation,
                                                        evaluator_test=evaluator_test,
-                                                       output_root_path=output_root_path)
+                                                       output_root_path=output_root_path,
+                                                       reader=data)
 
     # pool = multiprocessing.Pool(processes=int(multiprocessing.cpu_count()), maxtasksperchild=1)
     # resultList = pool.map(runParameterSearch_Collaborative_partial, collaborative_algorithm_list)

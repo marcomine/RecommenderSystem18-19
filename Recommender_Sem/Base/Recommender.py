@@ -61,7 +61,11 @@ class Recommender(object):
 
         assert self.URM_train.getformat() == "csr", "Recommender_Base_Class: URM_train is not CSR, this will cause errors in filtering seen items"
 
+
+
         seen = self.URM_train.indices[self.URM_train.indptr[user_id]:self.URM_train.indptr[user_id + 1]]
+
+
 
         scores[seen] = -np.inf
         return scores
