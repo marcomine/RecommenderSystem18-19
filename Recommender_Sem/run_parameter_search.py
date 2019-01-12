@@ -6,6 +6,7 @@ Created on 22/11/17
 @author: Maurizio Ferrari Dacrema
 """
 from DataReader import dataReader
+import scipy.sparse as sps
 #from DataReaderWithoutValid import dataReader
 from Base.NonPersonalizedRecommender import TopPop, Random
 from KNN.UserKNNCFRecommender import UserKNNCFRecommender
@@ -18,15 +19,18 @@ from GraphBased.RP3betaRecommender import RP3betaRecommender
 from MatrixFactorization.Cython.MatrixFactorization_Cython import MatrixFactorization_BPR_Cython, \
     MatrixFactorization_FunkSVD_Cython, MatrixFactorization_AsySVD_Cython
 from MatrixFactorization.PureSVD import PureSVDRecommender
+#from MatrixFactorization.PyTorch.MF_MSE_PyTorch import MF_MSE_PyTorch
+import  numpy as np
 
 
 
 from ParameterTuning.BayesianSearch import BayesianSearch
+from ParameterTuning.GridSearch import GridSearch
 
 import traceback, pickle
 from Utils.PoolWithSubprocess import PoolWithSubprocess
 
-from HybridRecommender2 import HybridRecommender
+from HybridRecommender_withoutpenal import HybridRecommender
 
 from ParameterTuning.AbstractClassSearch import DictionaryKeys
 
@@ -135,7 +139,7 @@ def runParameterSearch_Content(recommender_class, URM_train, ICM_object, ICM_nam
 def runParameterSearch_Collaborative(recommender_class, URM_train, ICM_1, ICM_2, metric_to_optimize="PRECISION",
                                      evaluator_validation=None, evaluator_test=None,
                                      evaluator_validation_earlystopping=None,
-                                     output_root_path="result_experiments/", parallelizeKNN=True, n_cases=100, reader=None):
+                                     output_root_path="result_experiments/", parallelizeKNN=True, n_cases=200, reader=None):
     from ParameterTuning.AbstractClassSearch import DictionaryKeys
 
     # If directory does not exist, create
@@ -146,8 +150,7 @@ def runParameterSearch_Collaborative(recommender_class, URM_train, ICM_1, ICM_2,
 
         output_root_path_rec_name = output_root_path + recommender_class.RECOMMENDER_NAME
 
-        parameterSearch = BayesianSearch(recommender_class, evaluator_validation=evaluator_validation,
-                                         evaluator_test=evaluator_test)
+        parameterSearch = BayesianSearch(recommender_class, evaluator_validation=evaluator_validation, evaluator_test = evaluator_test)
 
         if recommender_class in [TopPop, Random]:
             recommender = recommender_class(URM_train)
@@ -263,19 +266,62 @@ def runParameterSearch_Collaborative(recommender_class, URM_train, ICM_1, ICM_2,
 
 
             hyperparamethers_range_dictionary = {}
-            hyperparamethers_range_dictionary["w_itemcf"] = [(x * 5)+100 for x in range(0, 20)]
-            hyperparamethers_range_dictionary["w_usercf"] = [x * 5 for x in range(0, 20)]
-            hyperparamethers_range_dictionary["w_cbart"] = [x * 5 for x in range(0, 20)]
-            hyperparamethers_range_dictionary["w_cbalb"] = [x * 5 for x in range(0, 20)]
-            #hyperparamethers_range_dictionary["w_slim"] = [(x * 5) for x in range(0, 20)]
-            hyperparamethers_range_dictionary["w_svd"] = [x * 5 for x in range(0, 20)]
-            hyperparamethers_range_dictionary["w_rp3"] = [x * 5 for x in range(0, 20)]
-            hyperparamethers_range_dictionary["w_p3_alpha"] = [x * 5 for x in range(0, 20)]
-            hyperparamethers_range_dictionary["cb_weight"] = [x * 5 for x in range(0, 20)]
-            hyperparamethers_range_dictionary["cf_weight"] = [x * 5 for x in range(0, 20)]
-            hyperparamethers_range_dictionary["graph_weight"] = [x * 5 for x in range(0, 20)]
-            hyperparamethers_range_dictionary["hybrid_weight"] = [x * 5 for x in range(0, 20)]
-            hyperparamethers_range_dictionary["final_weight"] = [x * 5 for x in range(0, 20)]
+            # hyperparamethers_range_dictionary["w_itemcf"] = [(x * 0.05) for x in range(0, 40)]
+            # hyperparamethers_range_dictionary["w_usercf"] = [(x * 0.05) for x in range(0, 40)]
+            # hyperparamethers_range_dictionary["w_cbart"] = [(x * 0.05) for x in range(0, 40)]
+            # hyperparamethers_range_dictionary["w_cbalb"] = [(x * 0.05) for x in range(0, 40)]
+            # hyperparamethers_range_dictionary["w_slim"] = [(x * 0.05) for x in range(0, 40)]
+            # hyperparamethers_range_dictionary["w_svd"] = [x * 0.05 for x in range(0, 40)]
+            # hyperparamethers_range_dictionary["w_rp3"] = [(x * 0.05)  for x in range(0, 40)]
+
+            hyperparamethers_range_dictionary["w_itemcf"] = [(x * 0.01)  for x in range(0, 100)]
+            hyperparamethers_range_dictionary["w_usercf"] = [(x * 0.01) for x in range(0, 100)]
+            hyperparamethers_range_dictionary["w_cbart"] = [(x * 0.01)for x in range(0, 100)]
+            hyperparamethers_range_dictionary["w_cbalb"] = [(x * 0.01) for x in range(0, 100)]
+           # hyperparamethers_range_dictionary["w_slim"] = [(x * 0.001)+1.85  for x in range(0, 10)]
+            #hyperparamethers_range_dictionary["w_svd"] = [(x * 0.001)+0.1 for x in range(0, 10)]
+            hyperparamethers_range_dictionary["w_rp3"] = [(x * 0.01) for x in range(0, 100)]
+
+            #hyperparamethers_range_dictionary["topPop"] = [x for x in range(1, 10)]
+            #hyperparamethers_range_dictionary["idf"] = [True, False]
+            #hyperparamethers_range_dictionary["w_p3_alpha"] = [(x * 0.001)+1.9 for x in range(0, 10)]
+            # hyperparamethers_range_dictionary["topKItem"] = [(x * 50)+50 for x in range(0, 50)]
+            # hyperparamethers_range_dictionary["topKUser"] = [(x * 50)+50 for x in range(0, 50)]
+            # hyperparamethers_range_dictionary["shrinkItem"] = [x * 0.5 for x in range(0, 50)]
+            # hyperparamethers_range_dictionary["shrinkUser"] = [x * 0.5 for x in range(0, 50)]
+            #hyperparamethers_range_dictionary["topKP3"] = [(x * 50)+50 for x in range(0, 50)]
+            # hyperparamethers_range_dictionary["alphaP3"] = [(x * 0.0005) for x in range(0, 50)]
+            hyperparamethers_range_dictionary["topKRP3"] = [(x * 50)+50 for x in range(0, 50)]
+            hyperparamethers_range_dictionary["alphaRP3"] = range(0, 1)
+            hyperparamethers_range_dictionary["betaRP3"] = range(0, 1)
+            #hyperparamethers_range_dictionary["factorsSVD"] = [(x * 10)+10 for x in range(0, 100)]
+            # hyperparamethers_range_dictionary["topKCBAlb"] = [(x * 50)+50 for x in range(0, 50)]
+            # hyperparamethers_range_dictionary["topKCBArt"] = [(x * 50)+50 for x in range(0, 50)]
+            # hyperparamethers_range_dictionary["shrinkCBAlb"] = [x * 0.5 for x in range(0, 50)]
+            # hyperparamethers_range_dictionary["shrinkCBArt"] = [x * 0.5 for x in range(0, 50)]
+            #hyperparamethers_range_dictionary["pen_offset"] = [(x * 0.01) for x in range(1, 7)]
+
+
+            # idf = True
+            #
+            # if (idf):
+            #
+            #     nItems = URM_train.shape[1]
+            #     URMidf = sps.lil_matrix((URM_train.shape[0], URM_train.shape[1]))
+            #
+            #     for i in range(0, URM_train.shape[0]):
+            #         IDF_i = np.log(nItems / np.sum(URM_train[i]))
+            #         URMidf[i] = np.multiply(URM_train[i], IDF_i)
+            #
+            #     URM_train = URMidf.tocsr()
+
+
+
+            # hyperparamethers_range_dictionary["cb_weight"] = [x * 2 for x in range(0, 50)]
+            # #hyperparamethers_range_dictionary["cf_weight"] = [x * 2 for x in range(0, 50)]
+            # hyperparamethers_range_dictionary["graph_weight"] = [x * 2 for x in range(0, 50)]
+            # hyperparamethers_range_dictionary["hybrid_weight"] = [x * 2 for x in range(0, 50)]
+            # hyperparamethers_range_dictionary["final_weight"] = [x * 2 for x in range(0, 50)]
 
             #hyperparamethers_range_dictionary["w_p3_alpha"] = [x * 0.05 for x in range(0, 20)]
 
@@ -287,36 +333,45 @@ def runParameterSearch_Collaborative(recommender_class, URM_train, ICM_1, ICM_2,
 
             p3_alpha = P3alphaRecommender(URM_train=URM_train)
 
-            simURM_alpha = p3_alpha.fit(topK=200, alpha=0.7312418567825512, normalize_similarity=True)
 
 
 
-            simURM_ICF = item.fit(topK=800, shrink=22, similarity='cosine', normalize=True)
+
+
             #simURM_ICF = URM_train.dot(simURM_ICF)
 
-            simURM_UCF = user.fit(topK=400, shrink=0, similarity='cosine', normalize=True)
+
             #simURM_UCF = simURM_UCF.dot(URM_train)
 
-            simURM_SLIM = SLIM.fit(l1_penalty=1.95e-06, l2_penalty=0, positive_only=True, topK=1500, alpha=0.00165)
+            SLIM.fit(l1_penalty=1.95e-06, l2_penalty=0, positive_only=True, topK=1500, alpha=0.00165)
             #simURM_SLIM = URM_train.dot(simURM_SLIM)
 
             #"SLIM": simURM_SLIM,
+            ## "p3_alpha": p3_alpha,
 
             recommenderDictionary = {DictionaryKeys.CONSTRUCTOR_POSITIONAL_ARGS: [URM_train],
                                      DictionaryKeys.CONSTRUCTOR_KEYWORD_ARGS: {},
                                      DictionaryKeys.FIT_POSITIONAL_ARGS: dict(),
                                      DictionaryKeys.FIT_KEYWORD_ARGS: {"ICM_Art": ICM_1,
                                                                        "ICM_Alb": ICM_2,
-                                                                       "item": simURM_ICF,
+                                                                       "item": item,
                                                                        "user": user,
-                                                                       "SLIM": simURM_SLIM,
+                                                                       "SLIM": SLIM,
+                                                                       "users" : reader.get_users(),
+                                                                       "target" : reader.get_target_list(),
+                                                                       "p3_alpha": p3_alpha,
 
-                                                                       "p3_alpha": simURM_alpha,
+
+
+
+
 
 
 
                                                                        },
                                      DictionaryKeys.FIT_RANGE_KEYWORD_ARGS: hyperparamethers_range_dictionary}
+
+
 
         ##########################################################################################################
 
@@ -354,9 +409,29 @@ def runParameterSearch_Collaborative(recommender_class, URM_train, ICM_1, ICM_2,
                                                                        "validation_metric": metric_to_optimize},
                                      DictionaryKeys.FIT_RANGE_KEYWORD_ARGS: hyperparamethers_range_dictionary}
 
+            ##########################################################################################################
+
+        # if recommender_class is MF_MSE_PyTorch:
+        #     hyperparamethers_range_dictionary = {}
+        #     #hyperparamethers_range_dictionary["sgd_mode"] = ["adagrad", "adam"]
+        #     # hyperparamethers_range_dictionary["epochs"] = [1, 5, 10, 20, 30, 50, 70, 90, 110]
+        #     hyperparamethers_range_dictionary["num_factors"] = range(100, 1000, 20)
+        #     #hyperparamethers_range_dictionary["reg"] = [0.0, 1e-3, 1e-6, 1e-9]
+        #     hyperparamethers_range_dictionary["learning_rate"] = [1e-2, 1e-3, 1e-4, 1e-5]
+        #
+        #     recommenderDictionary = {DictionaryKeys.CONSTRUCTOR_POSITIONAL_ARGS: [URM_train],
+        #                              DictionaryKeys.CONSTRUCTOR_KEYWORD_ARGS: {},
+        #                              DictionaryKeys.FIT_POSITIONAL_ARGS: dict(),
+        #                              DictionaryKeys.FIT_KEYWORD_ARGS: {"validation_every_n": 5,
+        #
+        #                                                                "evaluator_object": evaluator_validation_earlystopping,
+        #                                                                "lower_validatons_allowed": 20,
+        #                                                                "validation_metric": metric_to_optimize},
+        #                              DictionaryKeys.FIT_RANGE_KEYWORD_ARGS: hyperparamethers_range_dictionary}
 
 
-        ##########################################################################################################
+
+            ##########################################################################################################
 
         if recommender_class is FunkSVD:
             hyperparamethers_range_dictionary = {}
@@ -382,7 +457,7 @@ def runParameterSearch_Collaborative(recommender_class, URM_train, ICM_1, ICM_2,
             hyperparamethers_range_dictionary["batch_size"] = [1000, 1200, 1500, 2000, 2500, 3000, 4000, 5000, 6000]
             hyperparamethers_range_dictionary["positive_reg"] = [x*0.00000005 for x in range(0, 40)]
             hyperparamethers_range_dictionary["negative_reg"] = [x*0.00000005 for x in range(0, 40)]
-            hyperparamethers_range_dictionary["learning_rate"] = [1e-2, 1e-3]
+            hyperparamethers_range_dictionary["learning_rate"] = [1e-2, 1e-3, 0.1]
             hyperparamethers_range_dictionary["user_reg"] = [x*0.00000005 for x in range(0, 40)]
 
 
@@ -418,13 +493,18 @@ def runParameterSearch_Collaborative(recommender_class, URM_train, ICM_1, ICM_2,
             hyperparamethers_range_dictionary["lambda_i"] = [1e-6]
             hyperparamethers_range_dictionary["lambda_j"] = [1e-9]
             hyperparamethers_range_dictionary["learning_rate"] = [0.01, 0.001, 1e-4, 1e-5, 0.1]
+            hyperparamethers_range_dictionary["batch_size"] = [x*100 for x in range(1, 10)]
+            hyperparamethers_range_dictionary["topK"] = [x * 50 for x in range(1, 20)]
+            hyperparamethers_range_dictionary["gamma"] = [(x * 0.02) + 0.9 for x in range(0, 5)]
+            hyperparamethers_range_dictionary["beta_1"] = [(x * 0.02) + 0.9 for x in range(0, 5)]
+            hyperparamethers_range_dictionary["beta_2"] = [(x * 0.02) + 0.9 for x in range(0, 5)]
 
             recommenderDictionary = {DictionaryKeys.CONSTRUCTOR_POSITIONAL_ARGS: [URM_train],
                                      DictionaryKeys.CONSTRUCTOR_KEYWORD_ARGS: {'train_with_sparse_weights': True,
                                                                                'symmetric': True,
                                                                                'positive_threshold': 1},
                                      DictionaryKeys.FIT_POSITIONAL_ARGS: dict(),
-                                     DictionaryKeys.FIT_KEYWORD_ARGS: {"validation_every_n": 10,
+                                     DictionaryKeys.FIT_KEYWORD_ARGS: {"validation_every_n": 5,
                                                                        "stop_on_validation": True,
                                                                        "evaluator_object": evaluator_validation_earlystopping,
                                                                        "lower_validatons_allowed":3,
@@ -503,7 +583,7 @@ def read_data_split_and_search():
         os.makedirs(output_root_path)
 
     collaborative_algorithm_list = [
-         HybridRecommender
+         FunkSVD
 
     ]
 

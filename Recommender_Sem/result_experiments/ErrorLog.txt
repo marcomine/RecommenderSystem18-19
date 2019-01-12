@@ -14,3 +14,19 @@ On recommender <class 'MatrixFactorization.MatrixFactorization_RMSE.FunkSVD'> Ex
 On recommender <class 'HybridRecommender_with_penalization.HybridRecommender'> Exception 'NoneType' object has no attribute 'dot'
 On recommender <class 'HybridRecommender_with_penalization.HybridRecommender'> Exception name 'simURM_SLIM' is not defined
 On recommender <class 'HybridRecommender2.HybridRecommender'> Exception Input contains NaN, infinity or a value too large for dtype('float64').
+On recommender <class 'HybridRecommender2.HybridRecommender'> Exception __init__() got an unexpected keyword argument 'URM_test'
+On recommender <class 'HybridRecommender2.HybridRecommender'> Exception __init__() got an unexpected keyword argument 'evaluation_function_validation'
+On recommender <class 'HybridRecommender2.HybridRecommender'> Exception build_all_cases_to_evaluate() missing 1 required positional argument: 'n_cases'
+On recommender <class 'HybridRecommender2.HybridRecommender'> Exception Input contains NaN, infinity or a value too large for dtype('float64').
+On recommender <class 'HybridRecommender2.HybridRecommender'> Exception Input contains NaN, infinity or a value too large for dtype('float64').
+On recommender <class 'HybridRecommender2.HybridRecommender'> Exception Input contains NaN, infinity or a value too large for dtype('float64').
+On recommender <class 'HybridRecommender2.HybridRecommender'> Exception Input contains NaN, infinity or a value too large for dtype('float64').
+On recommender <class 'HybridRecommender2.HybridRecommender'> Exception Input contains NaN, infinity or a value too large for dtype('float64').
+On recommender <class 'HybridRecommender2.HybridRecommender'> Exception Input contains NaN, infinity or a value too large for dtype('float64').
+On recommender <class 'HybridRecommender2.HybridRecommender'> Exception Input contains NaN, infinity or a value too large for dtype('float64').
+On recommender <class 'HybridRecommender_withoutpenal.HybridRecommender'> Exception Input contains NaN, infinity or a value too large for dtype('float64').
+On recommender <class 'HybridRecommender2.HybridRecommender'> Exception Input contains NaN, infinity or a value too large for dtype('float64').
+On recommender <class 'MatrixFactorization.MatrixFactorization_RMSE.FunkSVD'> Exception Input contains NaN, infinity or a value too large for dtype('float64').
+On recommender <class 'SLIM_BPR.Cython.SLIM_BPR_Cython.SLIM_BPR_Cython'> Exception Input contains NaN, infinity or a value too large for dtype('float64').
+On recommender <class 'SLIM_BPR.Cython.SLIM_BPR_Cython.SLIM_BPR_Cython'> Exception name 'MF_MSE_PyTorch' is not defined
+On recommender <class 'MatrixFactorization.MatrixFactorization_RMSE.FunkSVD'> Exception name 'MF_MSE_PyTorch' is not defined

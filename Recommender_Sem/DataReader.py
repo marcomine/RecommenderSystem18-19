@@ -3,7 +3,7 @@ import numpy as np
 import scipy.sparse as sps
 import time, sys
 import pandas as pd
-import csv
+
 
 from math import log
 import math
@@ -58,11 +58,11 @@ class dataReader:
         albumIdArtistIdCol = albumIdCol + artistIdCol
         albumIdArtistIdCol
 
-        number_of_play = max(train.playlist_id.tolist())
+        self.number_of_play = max(train.playlist_id.tolist())
         numPlaylist_notseq = len(playlistColTuples)
         numPlaylist_notseq = np.ones(numPlaylist_notseq, dtype=int)
         mat_notseq = sps.coo_matrix((numPlaylist_notseq, (playlistCol, tracklistCol)),
-                                    shape=(number_of_play + 1, len(trackCol)))
+                                    shape=(self.number_of_play + 1, len(trackCol)))
         mat_notseq = mat_notseq.tocsr()
 
         PlaylistColumn = train.playlist_id.tolist()
@@ -70,26 +70,26 @@ class dataReader:
         numPlaylist = len(PlaylistColumn)
         numPlaylist = np.ones(numPlaylist, dtype=int)
         self.mat_complete = sps.coo_matrix((numPlaylist, (PlaylistColumn, trackColumn)),
-                                           shape=(number_of_play + 1, len(trackCol)))
+                                           shape=(self.number_of_play + 1, len(trackCol)))
         self.mat_complete = self.mat_complete.tocsr()
 
         numPlaylist_notseq_target = np.ones(len(playlistCol_target_notseq), dtype=int)
         mat_notseq_target = sps.coo_matrix((numPlaylist_notseq_target, (playlistCol_target, tracklistCol_target)),
-                                    shape=(number_of_play + 1, len(trackCol)))
+                                    shape=(self.number_of_play + 1, len(trackCol)))
 
         playlistCol_seq = train_seq.playlist_id.tolist()
         numPlaylist_seq = len(playlistCol_seq)
         tracklistCol_seq = train_seq.track_id.tolist()
         numPlaylist_seq = np.ones(numPlaylist_seq, dtype=int)
         mat_seq = sps.coo_matrix((numPlaylist_seq, (playlistCol_seq, tracklistCol_seq)),
-                                 shape=(number_of_play + 1, len(trackCol)))
+                                 shape=(self.number_of_play + 1, len(trackCol)))
         mat_seq = mat_seq.tocsr()
 
         incremental = [i + 1 for i in range(len(playlistCol_seq))]
         incremental = list(reversed(incremental))
 
         mat_seq_rank = sps.coo_matrix((incremental, (playlistCol_seq, tracklistCol_seq)),
-                                      shape=(number_of_play + 1, len(trackCol)))
+                                      shape=(self.number_of_play + 1, len(trackCol)))
         mat_seq_rank = mat_seq_rank.tocsr()
 
         nonempty_seq = set(playlistCol_seq)
@@ -146,6 +146,9 @@ class dataReader:
 
     def get_target_list(self):
         return self.targetPlaylistCol
+
+    def get_users(self):
+        return self.number_of_play + 1
 
     def train_test_holdout(self, URM_all, URM_all_seq, URM_all_seq_rank, nonempty_seq, train_perc=0.8):
         numInteractions = URM_all.nnz

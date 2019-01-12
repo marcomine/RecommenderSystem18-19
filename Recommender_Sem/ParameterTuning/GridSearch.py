@@ -35,7 +35,7 @@ class GridSearch(RandomSearch):
 
 
     def search(self, dictionary_input, metric ="map", n_cases = 30, output_root_path = None, parallelPoolSize = 2, parallelize = True,
-               save_model = "best"):
+               save_model = "best",  max_ram_occupied_perc = None):
 
         # Associate the params that will be returned by BayesianOpt object to those you want to save
         # E.g. with early stopping you know which is the optimal number of epochs only afterwards
@@ -65,7 +65,7 @@ class GridSearch(RandomSearch):
         self.best_solution_object = None
 
 
-        paramether_dictionary_list = self.build_all_cases_to_evaluate()
+        paramether_dictionary_list = self.build_all_cases_to_evaluate(n_cases=n_cases)
 
 
         self.runSingleCase_partial = partial(self.runSingleCase,

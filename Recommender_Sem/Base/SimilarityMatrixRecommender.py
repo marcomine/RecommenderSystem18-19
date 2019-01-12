@@ -31,7 +31,7 @@ class SimilarityMatrixRecommender(object):
         if self.sparse_weights:
             user_profile = self.URM_train[user_id]
 
-            return user_profile.dot(self.W_sparse).toarray()
+            return user_profile.dot(self.W_sparse)
 
         else:
 
@@ -41,7 +41,7 @@ class SimilarityMatrixRecommender(object):
             user_ratings = self.URM_train.data[self.URM_train.indptr[user_id]:self.URM_train.indptr[user_id + 1]]
 
             relevant_weights = self.W[user_profile]
-            return relevant_weights.T.dot(user_ratings)
+            return relevant_weights.T.dot(user_ratings).toarray()
 
 
 
@@ -51,7 +51,7 @@ class SimilarityMatrixRecommender(object):
 
         if self.sparse_weights:
 
-            return self.W_sparse[user_id].dot(self.URM_train).toarray()
+            return self.W_sparse[user_id].dot(self.URM_train)
 
         else:
             # Numpy dot does not recognize sparse matrices, so we must

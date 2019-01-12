@@ -40,3 +40,16 @@ BayesianSearch: Testing config: {'num_factors': 1500, 'reg': 1e-06, 'learning_ra
 BayesianSearch: Testing config: {'num_factors': 1100, 'reg': 0.001, 'learning_rate': 0.001} - Exception index 11595 is out of bounds for axis 0 with size 1
 BayesianSearch: Testing config: {'num_factors': 300, 'reg': 1e-09, 'learning_rate': 0.001} - Exception index 11595 is out of bounds for axis 0 with size 1
 BayesianSearch: Testing config: {'num_factors': 700, 'reg': 1e-09, 'learning_rate': 0.01} - Exception index 11595 is out of bounds for axis 0 with size 1
+BayesianSearch: Testing config: {'num_factors': 500, 'reg': 1e-06, 'learning_rate': 0.01} - Exception argpartition not found
+BayesianSearch: Testing config: {'num_factors': 900, 'reg': 0.0, 'learning_rate': 0.01} - Exception argpartition not found
+BayesianSearch: Testing config: {'num_factors': 1100, 'reg': 0.001, 'learning_rate': 0.001} - Exception argpartition not found
+BayesianSearch: Testing config: {'num_factors': 1700, 'reg': 0.001, 'learning_rate': 0.01} - Exception too many indices for array
+BayesianSearch: Testing config: {'num_factors': 1300, 'reg': 1e-06, 'learning_rate': 0.01} - Exception too many indices for array
+BayesianSearch: Testing config: {'num_factors': 300, 'reg': 1e-06, 'learning_rate': 0.001} - Exception too many indices for array
+BayesianSearch: Testing config: {'num_factors': 1300, 'reg': 0.001, 'learning_rate': 0.01} - Exception too many indices for array
+BayesianSearch: Testing config: {'num_factors': 900, 'reg': 0.001, 'learning_rate': 0.001} - Exception too many indices for array
+BayesianSearch: Testing config: {'num_factors': 1300, 'reg': 0.0, 'learning_rate': 0.01} - Exception argpartition not found
+BayesianSearch: Testing config: {'num_factors': 500, 'reg': 0.001, 'learning_rate': 0.001} - Exception argpartition not found
+BayesianSearch: Testing config: {'num_factors': 100, 'reg': 1e-06, 'learning_rate': 0.01} - Exception argpartition not found
+BayesianSearch: Testing config: {'num_factors': 700, 'reg': 1e-06, 'learning_rate': 0.001} - Exception argpartition not found
+BayesianSearch: Testing config: {'num_factors': 1500, 'reg': 1e-06, 'learning_rate': 0.001} - Exception argpartition not found

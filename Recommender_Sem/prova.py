@@ -477,9 +477,9 @@ class ItemCBFKNNRecommender(object):
 
         W_sparse_p3 = self.p3.fit(alpha=0.8729488414975284, beta= 0.2541372492523202, min_rating=0, topK=150, implicit=True, normalize_similarity=True)
 
-        #SLIM = SLIMElasticNetRecommender(URM_train=self.URM)
+        SLIM = SLIMElasticNetRecommender(URM_train=self.URM)
 
-        #W_sparse_slim = SLIM.fit(l1_penalty=1.95e-06, l2_penalty=0, positive_only=True, topK=1500, alpha=0.00165)
+        W_sparse_slim = SLIM.fit(l1_penalty=1.95e-06, l2_penalty=0, positive_only=True, topK=1500, alpha=0.00165)
         #     #SLIM.fit(l1_penalty=1e-05, l2_penalty=0, positive_only=True, topK=150, alpha=0.00415637376180466)
 
         similarity_object_CF = Compute_Similarity_Python(self.URM, shrink=10,
@@ -509,7 +509,9 @@ class ItemCBFKNNRecommender(object):
 
 
 
+        self.svd = PureSVDRecommender(URM_train=self.URM)
 
+        self.svd.fit(num_factors=990)
 
         # nItems = self.URM.shape[1]
         # URMidf = sps.lil_matrix((self.URM.shape[0], self.URM.shape[1]))
@@ -521,16 +523,18 @@ class ItemCBFKNNRecommender(object):
         # self.URM = URMidf.tocsr()
 
         #URM_p3_alpha = self.URM.dot(W_sparse_p3_alpha)
+
+
         #URM_svd = W_sparse_svd_U.dot(W_sparse_svd_s_Vt)
 
-        item_sim = W_sparse_CF*1.05 + W_sparse_art*0.45 + W_sparse_alb*0.15
 
 
-        #URM_slim = self.URM.dot(W_sparse_slim)
+
+        URM_slim = self.URM.dot(W_sparse_slim)
         URM_p3 = self.URM.dot(W_sparse_p3)
-        URM_CF = self.URM.dot(item_sim)
-        # URM_art = self.URM.dot(W_sparse_art)
-        # URM_alb = self.URM.dot(W_sparse_alb)
+        URM_CF = self.URM.dot(W_sparse_CF)
+        URM_art = self.URM.dot(W_sparse_art)
+        URM_alb = self.URM.dot(W_sparse_alb)
         URM_CF_user = W_sparse_CF_user.dot(self.URM)
 
         from sklearn.preprocessing import normalize
@@ -538,7 +542,7 @@ class ItemCBFKNNRecommender(object):
 
 
 
-        self.URM_final_hybrid = URM_CF *  1.05 + URM_CF_user * 0.75 + URM_p3 * 0.95  #+ URM_slim*0.5
+        self.URM_final_hybrid = URM_CF *  1.3 + URM_CF_user * 0.15 + URM_p3 * 0.9  + URM_slim*0.9 +URM_alb* 0.2 + URM_art * 0.05
 
         #aqself.URM_final_hybrid = sps.csr_matrix(self.URM_final_hybrid)
 
@@ -562,7 +566,7 @@ class ItemCBFKNNRecommender(object):
 
             target = reader.getTarget()
 
-            target = set(target)
+
 
             for user_id in range(scores_matrix.shape[0]):
 
@@ -613,7 +617,7 @@ class ItemCBFKNNRecommender(object):
 
 
 
-        scores = self.URM_final_hybrid[user_id]
+        scores = self.URM_final_hybrid[user_id] + sps.csr_matrix(self.svd.compute_item_score(user_id)) * 0.25
 
         scores = scores.toarray().ravel()
 

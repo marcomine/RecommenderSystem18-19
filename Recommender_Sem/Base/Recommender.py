@@ -100,6 +100,7 @@ class Recommender(object):
         # Compute the scores using the model-specific function
         # Vectorize over all users in user_id_array
         scores_batch = self.compute_item_score(user_id_array)
+        scores_batch = scores_batch.toarray()
 
 
         # if self.normalize:
@@ -136,6 +137,7 @@ class Recommender(object):
 
 
         if remove_top_pop_flag:
+
             scores_batch = self._remove_TopPop_on_scores(scores_batch)
 
         if remove_CustomItems_flag:

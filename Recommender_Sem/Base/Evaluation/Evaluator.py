@@ -365,7 +365,8 @@ class SequentialEvaluator(Evaluator):
                 user_id = test_user_batch_array[batch_user_index]
                 recommended_items = recommended_items_batch_list[batch_user_index]
 
-                # Being the URM CSR, the indices are the non-zero column indexes
+
+                # # Being the URM CSR, the indices are the non-zero column indexes
                 relevant_items = self.get_user_relevant_items(user_id)
                 is_relevant = np.in1d(recommended_items, relevant_items, assume_unique=True)
 

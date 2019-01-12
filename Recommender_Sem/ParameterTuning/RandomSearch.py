@@ -88,9 +88,9 @@ class RandomSearch(AbstractClassSearch):
 
     ALGORITHM_NAME = "RandomSearch"
 
-    def __init__(self, recommender_class, URM_test = None, evaluation_function_validation=None):
+    def __init__(self, recommender_class, evaluation_function_validation=None):
 
-        super(RandomSearch, self).__init__(recommender_class, URM_test = URM_test, evaluation_function_validation= evaluation_function_validation)
+        super(RandomSearch, self).__init__(recommender_class, evaluation_function_validation)
 
 
     def build_all_cases_to_evaluate(self, n_cases):
