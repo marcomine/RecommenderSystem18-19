@@ -351,12 +351,17 @@ class SequentialEvaluator(Evaluator):
             test_user_batch_array = np.array(usersToEvaluate[user_batch_start:user_batch_end])
             user_batch_start = user_batch_end
 
-            # Compute predictions for a batch of users using vectorization, much more efficient than computing it one at a time
+            #Compute predictions for a batch of users using vectorization, much more efficient than computing it one at a time
             recommended_items_batch_list = recommender_object.recommend(test_user_batch_array,
                                                                   remove_seen_flag=self.exclude_seen,
                                                                   cutoff = self.max_cutoff,
                                                                   remove_top_pop_flag=False,
                                                                   remove_CustomItems_flag=self.ignore_items_flag)
+            # recommended_items_batch_list = recommender_object.recommend(test_user_batch_array,
+            #                                                             exclude_seen=self.exclude_seen,
+            #                                                             n=self.max_cutoff,
+            #                                                             filterTopPop=False,
+            #                                                             filterCustomItems=self.ignore_items_flag)
 
 
             # Compute recommendation quality for each user in batch

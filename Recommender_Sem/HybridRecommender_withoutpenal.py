@@ -8,6 +8,7 @@ from MatrixFactorization.Cython.MatrixFactorization_Cython import MatrixFactoriz
 from MatrixFactorization.PureSVD import PureSVDRecommender
 
 from Base.NonPersonalizedRecommender import TopPop, Random
+from KNN.UserKNNCBFRecommender import UserKNNCBFRecommender
 
 from KNN.UserKNNCFRecommender import UserKNNCFRecommender
 from KNN.ItemKNNCFRecommender import ItemKNNCFRecommender
@@ -38,7 +39,7 @@ class HybridRecommender(Recommender):
 
 
 
-    def fit(self, ICM_Art=None, ICM_Alb=None, item=None, user=None, SLIM=None, p3_alpha=None, users=0, target=[], topPop=0, w_itemcf=1.1, w_usercf=0.6, w_cbart=0.3, w_cbalb=0.6, w_slim=1.0, w_svd=0.6, w_rp3=1.1, w_p3_alpha=1.1, cb_weight=1.0, cf_weight=1.0, graph_weight=1.0, hybrid_weight=1.0, final_weight=1.0, topKItem = 800, topKUser=400, shrinkItem=22, shrinkUser=0, topKP3=200, alphaP3= 0.7312418567825512, topKRP3 = 150, alphaRP3 = 0.8729488414975284, betaRP3= 0.2541372492523202, factorsSVD= 490, topKCBAlb= 500, topKCBArt=800, shrinkCBAlb = 0, shrinkCBArt=1000, pen_offset=None):
+    def fit(self, ICM_Art=None, ICM_Alb=None, UCM_Art=None, UCM_Alb=None, item=None, user=None, SLIM=None, p3_alpha=None,SLIMnot=None, MF=None, users=0, target=[], topPop=0, w_itemcf=1.1, w_usercf=0.6, w_cbart=0.3, w_cbalb=0.6, w_cbuserart = 0.5, w_cbuseralb=0.5, w_slim=1.0, w_svd=0.6, w_rp3=1.1, w_p3_alpha=1.1, w_slimnot=0.5, w_mf=0.1, cb_weight=1.0, cf_weight=1.0, graph_weight=1.0, hybrid_weight=1.0, final_weight=1.0, topKItem = 800, topKUser=400, shrinkItem=22, shrinkUser=0, topKP3=200, alphaP3= 0.7312418567825512, topKRP3 = 150, alphaRP3 = 0.8729488414975284, betaRP3= 0.2541372492523202, factorsSVD= 490, topKCBAlb= 500, topKCBArt=800, shrinkCBAlb = 0, shrinkCBArt=1000, pen_offset=None):
 
         self.item = item
 
@@ -52,14 +53,20 @@ class HybridRecommender(Recommender):
 
         self.target = target
 
-        self.p3_alpha.fit(topK=topKP3, alpha=alphaP3, normalize_similarity=True)
+        #self.p3_alpha.fit(topK=topKP3, alpha=alphaP3, normalize_similarity=True)
 
+        self.SLIMnot = SLIMnot
 
+        self.MF = MF
 
         # topPopRec = TopPop(self.URM_train)
         # topPopRec.fit()
         #
-        # self.filterTopPop_ItemsID = topPopRec.recommend(0, cutoff=topPop)
+        self.CBUserArt = UserKNNCBFRecommender(ICM=UCM_Art, URM_train=self.URM_train)
+
+        self.CBUserAlb = UserKNNCBFRecommender(ICM=UCM_Alb, URM_train=self.URM_train)
+
+
 
 
         self.item.fit(topK=topKItem, shrink=shrinkItem, similarity='cosine', normalize=True)
@@ -75,6 +82,13 @@ class HybridRecommender(Recommender):
 
         self.CBAlb = ItemKNNCBFRecommender(ICM=ICM_Alb, URM_train=self.URM_train)
 
+        self.CBUserArt.fit(topK=100, shrink=300, similarity='cosine', normalize=True,
+                           feature_weighting='TF-IDF')
+
+        self.CBUserAlb.fit(topK=300, shrink=10, similarity='cosine', normalize=True,
+                           feature_weighting='BM25')
+
+
         self.SVD = PureSVDRecommender(URM_train=self.URM_train)
 
         self.p3 = RP3betaRecommender(URM_train=self.URM_train)
@@ -89,6 +103,10 @@ class HybridRecommender(Recommender):
 
         self.w_itemcf = w_itemcf
 
+        self.w_cbuserart = w_cbuserart
+
+        self.w_cbuseralb = w_cbuseralb
+
         self.w_usercf = w_usercf
 
         self.w_cbart = w_cbart
@@ -102,6 +120,10 @@ class HybridRecommender(Recommender):
         self.w_p3 = w_rp3
 
         self.w_p3_alpha = w_p3_alpha
+
+        self.slimnot = w_slimnot
+
+        self.w_mf = w_mf
 
         # if(idf):
         #
@@ -169,7 +191,16 @@ class HybridRecommender(Recommender):
             self.CBArt.compute_item_score(user_id)) * self.w_cbart + sps.csr_matrix(
             self.CBAlb.compute_item_score(user_id)) * self.w_cbalb + sps.csr_matrix(
             self.user.compute_item_score(user_id)) * self.w_usercf  + sps.csr_matrix(
-            self.SLIM.compute_item_score(user_id)) * self.w_slim
+            self.CBUserArt.compute_item_score(user_id)) * self.w_cbuserart + sps.csr_matrix(
+            self.CBUserAlb.compute_item_score(user_id)) * self.w_cbuseralb+ sps.csr_matrix(
+            self.SVD.compute_item_score(user_id)) * self.w_svd + sps.csr_matrix(
+            self.item.compute_item_score(user_id)) * self.w_itemcf + sps.csr_matrix(
+            self.p3.compute_item_score(user_id)) * self.w_p3 + sps.csr_matrix(
+            self.SLIM.compute_item_score(user_id)) * self.w_slim + sps.csr_matrix(
+            self.SLIMnot.compute_item_score(user_id)) * self.slimnot #+ sps.csr_matrix(
+            #self.MF.compute_item_score(user_id)) * self.w_mf
+
+
 
         print(type(recs))
 

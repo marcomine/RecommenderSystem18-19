@@ -30,3 +30,16 @@ On recommender <class 'MatrixFactorization.MatrixFactorization_RMSE.FunkSVD'> Ex
 On recommender <class 'SLIM_BPR.Cython.SLIM_BPR_Cython.SLIM_BPR_Cython'> Exception Input contains NaN, infinity or a value too large for dtype('float64').
 On recommender <class 'SLIM_BPR.Cython.SLIM_BPR_Cython.SLIM_BPR_Cython'> Exception name 'MF_MSE_PyTorch' is not defined
 On recommender <class 'MatrixFactorization.MatrixFactorization_RMSE.FunkSVD'> Exception name 'MF_MSE_PyTorch' is not defined
+On recommender <class 'MatrixFactorization.MatrixFactorization_RMSE.FunkSVD'> Exception Input contains NaN, infinity or a value too large for dtype('float64').
+On recommender <class 'SLIM_BPR.Cython.SLIM_BPR_Cython.SLIM_BPR_Cython'> Exception Input contains NaN, infinity or a value too large for dtype('float64').
+On recommender <class 'SLIM_BPR.Cython.SLIM_BPR_Cython.SLIM_BPR_Cython'> Exception Input contains NaN, infinity or a value too large for dtype('float64').
+On recommender <class 'SLIM_BPR.Cython.SLIM_BPR_Cython.SLIM_BPR_Cython'> Exception Input contains NaN, infinity or a value too large for dtype('float64').
+On recommender <class 'MatrixFactorization.MatrixFactorization_RMSE.FunkSVD'> Exception Input contains NaN, infinity or a value too large for dtype('float64').
+On recommender <class 'MatrixFactorization.MatrixFactorization_RMSE.FunkSVD'> Exception Input contains NaN, infinity or a value too large for dtype('float64').
+On recommender <class 'MatrixFactorization.Cython.MatrixFactorization_Cython.MatrixFactorization_AsySVD_Cython'> Exception local variable 'recommenderDictionary' referenced before assignment
+On recommender <class 'MatrixFactorization.Cython.MatrixFactorization_Cython.MatrixFactorization_BPR_Cython'> Exception Input contains NaN, infinity or a value too large for dtype('float64').
+On recommender <class 'HybridRecommender_withoutpenal.HybridRecommender'> Exception index (17459) out of range (>= 1)
+On recommender <class 'HybridRecommender_withoutpenal.HybridRecommender'> Exception index (17459) out of range (>= 1)
+On recommender <class 'HybridRecommender_withoutpenal.HybridRecommender'> Exception Input contains NaN, infinity or a value too large for dtype('float64').
+On recommender <class 'HybridRecommender_withoutpenal.HybridRecommender'> Exception 'numpy.ndarray' object has no attribute 'toarray'
+On recommender <class 'HybridRecommender2.HybridRecommender'> Exception Input contains NaN, infinity or a value too large for dtype('float64').

@@ -5,12 +5,13 @@ Created on 22/11/17
 
 @author: Maurizio Ferrari Dacrema
 """
-from DataReader import dataReader
-import scipy.sparse as sps
+from DataReader_withUCM import dataReader
+
 #from DataReaderWithoutValid import dataReader
 from Base.NonPersonalizedRecommender import TopPop, Random
 from KNN.UserKNNCFRecommender import UserKNNCFRecommender
 from KNN.ItemKNNCFRecommender import ItemKNNCFRecommender
+from KNN.UserKNNCBFRecommender import UserKNNCBFRecommender
 from SLIM_BPR.Cython.SLIM_BPR_Cython import SLIM_BPR_Cython
 from SLIM_ElasticNet.SLIMElasticNetRecommender import SLIMElasticNetRecommender, MultiThreadSLIM_ElasticNet
 from GraphBased.P3alphaRecommender import P3alphaRecommender
@@ -30,7 +31,7 @@ from ParameterTuning.GridSearch import GridSearch
 import traceback, pickle
 from Utils.PoolWithSubprocess import PoolWithSubprocess
 
-from HybridRecommender_withoutpenal import HybridRecommender
+from HybridRecommender2 import HybridRecommender
 
 from ParameterTuning.AbstractClassSearch import DictionaryKeys
 
@@ -136,7 +137,7 @@ def runParameterSearch_Content(recommender_class, URM_train, ICM_object, ICM_nam
             run_KNNCBFRecommender_on_similarity_type_partial(similarity_type)
 
 
-def runParameterSearch_Collaborative(recommender_class, URM_train, ICM_1, ICM_2, metric_to_optimize="PRECISION",
+def runParameterSearch_Collaborative(recommender_class, URM_train, ICM_1, ICM_2,UCM_1,UCM_2,  metric_to_optimize="PRECISION",
                                      evaluator_validation=None, evaluator_test=None,
                                      evaluator_validation_earlystopping=None,
                                      output_root_path="result_experiments/", parallelizeKNN=True, n_cases=200, reader=None):
@@ -274,26 +275,30 @@ def runParameterSearch_Collaborative(recommender_class, URM_train, ICM_1, ICM_2,
             # hyperparamethers_range_dictionary["w_svd"] = [x * 0.05 for x in range(0, 40)]
             # hyperparamethers_range_dictionary["w_rp3"] = [(x * 0.05)  for x in range(0, 40)]
 
-            hyperparamethers_range_dictionary["w_itemcf"] = [(x * 0.01)  for x in range(0, 100)]
-            hyperparamethers_range_dictionary["w_usercf"] = [(x * 0.01) for x in range(0, 100)]
-            hyperparamethers_range_dictionary["w_cbart"] = [(x * 0.01)for x in range(0, 100)]
-            hyperparamethers_range_dictionary["w_cbalb"] = [(x * 0.01) for x in range(0, 100)]
-           # hyperparamethers_range_dictionary["w_slim"] = [(x * 0.001)+1.85  for x in range(0, 10)]
-            #hyperparamethers_range_dictionary["w_svd"] = [(x * 0.001)+0.1 for x in range(0, 10)]
-            hyperparamethers_range_dictionary["w_rp3"] = [(x * 0.01) for x in range(0, 100)]
+            hyperparamethers_range_dictionary["w_itemcf"] = [(x * 0.05)+1  for x in range(0, 20)]
+            hyperparamethers_range_dictionary["w_usercf"] = [(x * 0.05) for x in range(0, 20)]
+            hyperparamethers_range_dictionary["w_cbart"] = [(x * 0.05) for x in range(0, 20)]
+            hyperparamethers_range_dictionary["w_cbalb"] = [(x * 0.05) for x in range(0, 20)]
+            hyperparamethers_range_dictionary["w_slim"] = [(x * 0.05)  for x in range(0, 20)]
+            hyperparamethers_range_dictionary["w_svd"] = [(x * 0.05) for x in range(0, 20)]
+            hyperparamethers_range_dictionary["w_rp3"] = [(x * 0.05) for x in range(0, 20)]
+            #hyperparamethers_range_dictionary["w_cbuserart"] = [(x * 0.05) for x in range(0, 20)]
+            #hyperparamethers_range_dictionary["w_cbuseralb"] = [(x * 0.05) for x in range(0, 20)]
+            #hyperparamethers_range_dictionary["w_slimnot"] = [(x * 0.05) for x in range(0, 20)]
+            #hyperparamethers_range_dictionary["w_mf"] = [(x * 0.05) for x in range(0, 20)]
 
             #hyperparamethers_range_dictionary["topPop"] = [x for x in range(1, 10)]
             #hyperparamethers_range_dictionary["idf"] = [True, False]
-            #hyperparamethers_range_dictionary["w_p3_alpha"] = [(x * 0.001)+1.9 for x in range(0, 10)]
+            #hyperparamethers_range_dictionary["w_p3_alpha"] = [(x * 0.05) for x in range(0, 20)]
             # hyperparamethers_range_dictionary["topKItem"] = [(x * 50)+50 for x in range(0, 50)]
             # hyperparamethers_range_dictionary["topKUser"] = [(x * 50)+50 for x in range(0, 50)]
             # hyperparamethers_range_dictionary["shrinkItem"] = [x * 0.5 for x in range(0, 50)]
             # hyperparamethers_range_dictionary["shrinkUser"] = [x * 0.5 for x in range(0, 50)]
             #hyperparamethers_range_dictionary["topKP3"] = [(x * 50)+50 for x in range(0, 50)]
             # hyperparamethers_range_dictionary["alphaP3"] = [(x * 0.0005) for x in range(0, 50)]
-            hyperparamethers_range_dictionary["topKRP3"] = [(x * 50)+50 for x in range(0, 50)]
-            hyperparamethers_range_dictionary["alphaRP3"] = range(0, 1)
-            hyperparamethers_range_dictionary["betaRP3"] = range(0, 1)
+            #hyperparamethers_range_dictionary["topKRP3"] = [(x * 50)+50 for x in range(0, 50)]
+            #hyperparamethers_range_dictionary["alphaRP3"] = range(0, 1)
+            #hyperparamethers_range_dictionary["betaRP3"] = range(0, 1)
             #hyperparamethers_range_dictionary["factorsSVD"] = [(x * 10)+10 for x in range(0, 100)]
             # hyperparamethers_range_dictionary["topKCBAlb"] = [(x * 50)+50 for x in range(0, 50)]
             # hyperparamethers_range_dictionary["topKCBArt"] = [(x * 50)+50 for x in range(0, 50)]
@@ -334,9 +339,13 @@ def runParameterSearch_Collaborative(recommender_class, URM_train, ICM_1, ICM_2,
             p3_alpha = P3alphaRecommender(URM_train=URM_train)
 
 
+            #SLIMnot = SLIM_BPR_Cython(URM_train=URM_train, train_with_sparse_weights=True, symmetric=True, positive_threshold=1 )
 
+            #SLIMnot.fit(validation_every_n=5, stop_on_validation=True, evaluator_object=evaluator_validation_earlystopping, lower_validatons_allowed=3, validation_metric=metric_to_optimize,  )
 
+            MF = MatrixFactorization_BPR_Cython(URM_train=URM_train, positive_threshold=1)
 
+            #MF.fit(validation_every_n= 5,stop_on_validation= True, evaluator_object= evaluator_validation_earlystopping,lower_validatons_allowed= 20, validation_metric = metric_to_optimize)
 
             #simURM_ICF = URM_train.dot(simURM_ICF)
 
@@ -357,9 +366,15 @@ def runParameterSearch_Collaborative(recommender_class, URM_train, ICM_1, ICM_2,
                                                                        "item": item,
                                                                        "user": user,
                                                                        "SLIM": SLIM,
+
+
+
+
                                                                        "users" : reader.get_users(),
                                                                        "target" : reader.get_target_list(),
-                                                                       "p3_alpha": p3_alpha,
+
+
+
 
 
 
@@ -573,8 +588,11 @@ def read_data_split_and_search():
     URM_validation = data.get_URM_validation()
     URM_test = data.get_URM_test()
 
-    ICM_alb = data.ICM_Alb
-    ICM_art = data.ICM_Art
+    ICM_alb = data.get_ICM_Alb()
+    ICM_art = data.get_ICM_Art()
+    UCM_alb = data.get_UCM_Alb()
+    UCM_art = data.get_UCM_Art()
+
 
     output_root_path = "result_experiments/"
 
@@ -583,7 +601,7 @@ def read_data_split_and_search():
         os.makedirs(output_root_path)
 
     collaborative_algorithm_list = [
-         FunkSVD
+       HybridRecommender
 
     ]
 
@@ -600,12 +618,26 @@ def read_data_split_and_search():
                                                        URM_train=URM_train,
                                                        ICM_1 = ICM_art,
                                                        ICM_2 = ICM_alb,
+                                                       UCM_1 = UCM_art,
+                                                       UCM_2 = UCM_alb,
                                                        metric_to_optimize="MAP",
                                                        evaluator_validation_earlystopping=evaluator_validation_earlystopping,
                                                        evaluator_validation=evaluator_validation,
                                                        evaluator_test=evaluator_test,
                                                        output_root_path=output_root_path,
                                                        reader=data)
+
+    # runParameterSearch_Collaborative_partial = partial(runParameterSearch_Content,
+    #                                                    URM_train=URM_train,
+    #
+    #                                                    ICM_object=UCM_alb,
+    #                                                    ICM_name="UCM_alb",
+    #                                                    metric_to_optimize="MAP",
+    #
+    #                                                    evaluator_validation=evaluator_validation,
+    #                                                    evaluator_test=evaluator_test,
+    #                                                    output_root_path=output_root_path,
+    #                                                    )
 
     # pool = multiprocessing.Pool(processes=int(multiprocessing.cpu_count()), maxtasksperchild=1)
     # resultList = pool.map(runParameterSearch_Collaborative_partial, collaborative_algorithm_list)

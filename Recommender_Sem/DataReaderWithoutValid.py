@@ -128,6 +128,9 @@ class dataReader:
         self.mat_Test = URM_test+URM_test_seq
         self.mat_Valid = sps.csr_matrix(mat.shape, dtype=int)
 
+        self.UCM_Alb = URM_train.dot(self.ICM_Alb)
+        self.UCM_Art = URM_train.dot(self.ICM_Art)
+
 
     def getTarget(self):
         return self.targetPlaylist
@@ -146,6 +149,12 @@ class dataReader:
 
     def get_ICM_Alb(self):
         return self.ICM_Alb
+
+    def get_UCM_Alb(self):
+        return self.UCM_Alb
+
+    def get_UCM_Art(self):
+        return self.UCM_Art
 
     def get_URM_test(self):
         return self.mat_Test

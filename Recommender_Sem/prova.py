@@ -4,10 +4,16 @@ import time, sys
 import pandas as pd
 import csv
 import os
+
+from Base.Recommender import Recommender
 from DataReaderWithoutValid import dataReader
 from GraphBased.P3alphaRecommender import P3alphaRecommender
 from GraphBased.RP3betaRecommender import RP3betaRecommender
+from KNN.ItemKNNCFRecommender import ItemKNNCFRecommender
+from KNN.UserKNNCFRecommender import UserKNNCFRecommender
+from MatrixFactorization.Cython.MatrixFactorization_Cython import MatrixFactorization_BPR_Cython
 from MatrixFactorization.PureSVD import PureSVDRecommender
+from SLIM_BPR.Cython.SLIM_BPR_Cython import SLIM_BPR_Cython
 from SLIM_ElasticNet.SLIMElasticNetRecommender import SLIMElasticNetRecommender
 
 
@@ -452,10 +458,10 @@ class Compute_Similarity_Python:
 
 
 
-class ItemCBFKNNRecommender(object):
+class ItemCBFKNNRecommender(Recommender):
 
     def __init__(self, URM, ICM_art, ICM_Alb):
-        self.URM = URM
+        self.URM_train = URM
         self.ICM_art = ICM_art
         self.ICM_Alb = ICM_Alb
         self.penalized = False
@@ -465,84 +471,52 @@ class ItemCBFKNNRecommender(object):
 
     def fit(self, topK=160, shrink=22, normalize=True):
 
-        #self.svd = PureSVDRecommender(URM_train=self.URM)
+        item = ItemKNNCFRecommender(self.URM_train)
 
-        #W_sparse_svd_U, W_sparse_svd_s_Vt = self.svd.fit(490)
+        user = UserKNNCFRecommender(self.URM_train)
 
-        #p3_alpha = P3alphaRecommender(URM_train=self.URM)
+        SLIM = SLIMElasticNetRecommender(URM_train=self.URM_train)
 
-        #W_sparse_p3_alpha = p3_alpha.fit(topK=200, alpha=0.7312418567825512, normalize_similarity=True)
+        p3_alpha = P3alphaRecommender(URM_train=self.URM_train)
 
-        self.p3 = RP3betaRecommender(URM_train=self.URM)
+        SLIMnot = SLIM_BPR_Cython(URM_train=self.URM_train, train_with_sparse_weights=True, symmetric=True,
+                                  positive_threshold=1)
 
-        W_sparse_p3 = self.p3.fit(alpha=0.8729488414975284, beta= 0.2541372492523202, min_rating=0, topK=150, implicit=True, normalize_similarity=True)
+        SLIMnot.fit(validation_every_n=5, stop_on_validation=True, evaluator_object=evaluator_validation_earlystopping,
+                    lower_validatons_allowed=3, validation_metric=metric_to_optimize, )
 
-        SLIM = SLIMElasticNetRecommender(URM_train=self.URM)
+        MF = MatrixFactorization_BPR_Cython(URM_train=URM_train, positive_threshold=1)
 
-        W_sparse_slim = SLIM.fit(l1_penalty=1.95e-06, l2_penalty=0, positive_only=True, topK=1500, alpha=0.00165)
-        #     #SLIM.fit(l1_penalty=1e-05, l2_penalty=0, positive_only=True, topK=150, alpha=0.00415637376180466)
+        # MF.fit(validation_every_n= 5,stop_on_validation= True, evaluator_object= evaluator_validation_earlystopping,lower_validatons_allowed= 20, validation_metric = metric_to_optimize)
 
-        similarity_object_CF = Compute_Similarity_Python(self.URM, shrink=10,
-                                                         topK=800, normalize=normalize,
-                                                         similarity="cosine")
+        # simURM_ICF = URM_train.dot(simURM_ICF)
 
-        W_sparse_CF = similarity_object_CF.compute_similarity()
+        # simURM_UCF = simURM_UCF.dot(URM_train)
 
-        similarity_object_CF_user = Compute_Similarity_Python(self.URM.T, shrink=0,
-                                                              topK=400, normalize=normalize,
-                                                              similarity="cosine")
+        SLIM.fit(l1_penalty=1.95e-06, l2_penalty=0, positive_only=True, topK=1500, alpha=0.00165)
+        # simURM_SLIM = URM_train.dot(simURM_SLIM)
 
-        W_sparse_CF_user = similarity_object_CF_user.compute_similarity()
-        # self.W_sparse_CF_user = normalize(self.W_sparse_CF_user)
+        # "SLIM": simURM_SLIM,
+        ## "p3_alpha": p3_alpha,
 
-        similarity_object_artist = Compute_Similarity_Python(self.ICM_art.T, shrink=0,
-                                                             topK=500, normalize=normalize,
-                                                             similarity="cosine")
-
-        W_sparse_art = similarity_object_artist.compute_similarity()
-
-        similarity_object_album = Compute_Similarity_Python(self.ICM_Alb.T, shrink=1000,
-                                                            topK=500, normalize=normalize,
-                                                            similarity="cosine")
-
-        W_sparse_alb = similarity_object_album.compute_similarity()
+        HYbrid =
 
 
 
-        self.svd = PureSVDRecommender(URM_train=self.URM)
 
-        self.svd.fit(num_factors=990)
-
-        # nItems = self.URM.shape[1]
-        # URMidf = sps.lil_matrix((self.URM.shape[0], self.URM.shape[1]))
+        # URM_slim = self.URM.dot(W_sparse_slim)
+        # URM_p3 = self.URM.dot(W_sparse_p3)
+        # URM_CF = self.URM.dot(W_sparse_CF)
+        # URM_art = self.URM.dot(W_sparse_art)
+        # URM_alb = self.URM.dot(W_sparse_alb)
+        # URM_CF_user = W_sparse_CF_user.dot(self.URM)
         #
-        # for i in range(0, self.URM.shape[0]):
-        #     IDF_i = log(nItems / np.sum(self.URM[i]))
-        #     URMidf[i] = np.multiply(self.URM[i], IDF_i)
+        # from sklearn.preprocessing import normalize
         #
-        # self.URM = URMidf.tocsr()
-
-        #URM_p3_alpha = self.URM.dot(W_sparse_p3_alpha)
-
-
-        #URM_svd = W_sparse_svd_U.dot(W_sparse_svd_s_Vt)
-
-
-
-
-        URM_slim = self.URM.dot(W_sparse_slim)
-        URM_p3 = self.URM.dot(W_sparse_p3)
-        URM_CF = self.URM.dot(W_sparse_CF)
-        URM_art = self.URM.dot(W_sparse_art)
-        URM_alb = self.URM.dot(W_sparse_alb)
-        URM_CF_user = W_sparse_CF_user.dot(self.URM)
-
-        from sklearn.preprocessing import normalize
-
-
-
-
-        self.URM_final_hybrid = URM_CF *  1.3 + URM_CF_user * 0.15 + URM_p3 * 0.9  + URM_slim*0.9 +URM_alb* 0.2 + URM_art * 0.05
+        #
+        #
+        #
+        # self.URM_final_hybrid = URM_CF *  1.3 + URM_CF_user * 0.15 + URM_p3 * 0.9  + URM_slim*0.9 +URM_alb* 0.2 + URM_art * 0.05
 
         #aqself.URM_final_hybrid = sps.csr_matrix(self.URM_final_hybrid)
 
@@ -646,9 +620,9 @@ class ItemCBFKNNRecommender(object):
 
 
 reader = dataReader()
-recommender = ItemCBFKNNRecommender(reader.mat_Train, reader.get_ICM_Art(), reader.get_ICM_Alb())
+recommender = ItemCBFKNNRecommender(reader.mat_complete, reader.get_ICM_Art(), reader.get_ICM_Alb())
 recommender.fit(shrink=22, topK=160)
-evaluate_algorithm(reader.mat_Test, recommender, at=10)
+#evaluate_algorithm(reader.mat_Test, recommender, at=10)
 # with open('Hybrid_with_SLIMM.csv', 'w', newline='') as f:
 #     thewriter = csv.writer(f)
 #     thewriter.writerow(['playlist_id', 'track_ids'])

@@ -44,7 +44,7 @@ class FunkSVD(Recommender):
         super(FunkSVD, self).__init__()
 
         self.URM_train = check_matrix(URM_train, 'csr', dtype=np.float32)
-        self.recommend = self.recommendBatch
+
 
 
 
@@ -215,8 +215,10 @@ class FunkSVD(Recommender):
         # Vectorize over all users in user_id_array
         scores_batch = np.dot(self.U[user_id_array], self.V.T)
 
+
         #if not working add toarray()
-        scores_batch = scores_batch
+
+
 
         # if self.normalize:
         #     # normalization will keep the scores in the same range
@@ -238,6 +240,12 @@ class FunkSVD(Recommender):
 
             if remove_seen_flag:
                 scores_batch[user_index, :] = self._remove_seen_on_scores(user_id, scores_batch[user_index, :])
+
+        print(type(scores_batch))
+
+        scores_batch = scores_batch.toarray()
+
+        print(type(scores_batch))
 
             # Sorting is done in three steps. Faster then plain np.argsort for higher number of items
             # - Partition the data to extract the set of relevant items

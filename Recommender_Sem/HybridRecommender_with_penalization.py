@@ -174,7 +174,7 @@ class HybridRecommender(Recommender):
     def compute_item_score(self, user_id):
 
         if (self.penalized == False):
-            self.URM_final = self.penalize(self.URM_final, [0.95, 0.90, 0.85, 0.80])
+            self.URM_final = self.penalize(self.URM_final, [1.2, 1.4, 1.6, 1.8])
             self.penalized = True
 
         return self.URM_final[user_id]
